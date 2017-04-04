@@ -9,10 +9,15 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
+
+import com.sun.javafx.geom.Curve;
+
 import org.opencv.imgcodecs.Imgcodecs;
 import java.util.List;
 
@@ -28,14 +33,14 @@ public class getPicture {
 	public static void main(String[] args) {
 
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		String path = "/Users/beemihae/Desktop/groundfloor.jpg";
+		String path = "/Users/beemihae/Desktop/groundfloor1.jpg";
 		String dstPathSobel = "/Users/beemihae/Desktop/Sobel.jpg";
 		String dstPathHSV = "/Users/beemihae/Desktop/HSV.jpg";
 
 		// applyHSV(path, dstPathHSV);
 
-		applySobel(path, dstPathSobel);
-
+		Mat filtImage = applySobel(path, dstPathSobel);
+		
 	}
 
 	public static double[] RGBtoHSV(double r, double g, double b) {
@@ -77,32 +82,36 @@ public class getPicture {
 		return new double[] { h, s, v };
 	}
 
-	public static void applySobel(String path, String dstPath) {
+	public static Mat applySobel(String path, String dstPath) {
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);
-		//Mat image = Imgcodecs.imread(path, 0);
+		// Mat image = Imgcodecs.imread(path, 0);
 		// Mat imgDst = new Mat(image.size());
 		Mat imgDst = Imgcodecs.imread(path);
 		System.out.println("start Sobel");
 
 		// imgDst = erodeDilate(image, 3, 3);
 
-		 //Imgproc.equalizeHist(image, image);
-		Imgproc.GaussianBlur(image, imgDst, new Size(23,23), 0, 0, 0);
+		// Imgproc.equalizeHist(image, image);
+		Imgproc.GaussianBlur(image, imgDst, new Size(23, 23), 0, 0, 0);
 		// imgDst = erodeDilate(image,3,3);
 
-		//Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 1, 0);
-		//Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 0, 1);
-		imgDst = applyContours(imgDst, "Sobel");
+		// Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 1, 0);
+		// Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 0, 1);
+		// imgDst = applyContours(imgDst, "Sobel");
+		Imgproc.cvtColor(imgDst, imgDst, Imgproc.COLOR_BGR2GRAY);
 		imgDst = adaptiveThreshold(imgDst);
+		Imgproc.Canny(imgDst, imgDst, 10, 100);
+		imgDst = applyContours(imgDst);
 		System.out.println("Sobel done");
 		Imgcodecs.imwrite(dstPath, imgDst);
-		
+
 		System.out.println("Written to " + dstPath);
+		return imgDst;
 		/*
-		 * BufferedImage img = matToBufferedImage(imgDst);
-		 * JFrame frame = new JFrame(); frame.getContentPane().setLayout(new
-		 * FlowLayout()); frame.getContentPane().add(new JLabel((Icon) new
-		 * ImageIcon(img))); frame.pack(); frame.setVisible(true);
+		 * BufferedImage img = matToBufferedImage(imgDst); JFrame frame = new
+		 * JFrame(); frame.getContentPane().setLayout(new FlowLayout());
+		 * frame.getContentPane().add(new JLabel((Icon) new ImageIcon(img)));
+		 * frame.pack(); frame.setVisible(true);
 		 * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 */
 	}
@@ -125,30 +134,53 @@ public class getPicture {
 
 	}
 
-	public static Mat applyContours(Mat image, String type) {
+	public static Mat applyContours(Mat image) {
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		if (type.equals("Sobel")) {
-			Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
-		}
+		/*
+		 * if (type.equals("Sobel")) { Imgproc.cvtColor(image, image,
+		 * Imgproc.COLOR_BGR2GRAY); }
+		 */
+		Imgproc.Canny(image, image, 10, 100);
 		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
+		double maxArea = -1;
+		MatOfPoint curveApprRight = new MatOfPoint();
 		for (int i = 0; i < contours.size(); i++) {
-			System.out.println(Imgproc.contourArea(contours.get(i)));
-			if (Imgproc.contourArea(contours.get(i)) > 50) {
-				Rect rect = Imgproc.boundingRect(contours.get(i));
-				System.out.println(rect.height);
-				if (rect.height > 28) {
-					// System.out.println(rect.x
-					// +","+rect.y+","+rect.height+","+rect.width);
-					Imgproc.rectangle(image, new Point(rect.x, rect.y),
-							new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 0, 255));
 
+			double contourarea = Imgproc.contourArea(contours.get(i));
+			if (contourarea > maxArea) {
+				MatOfPoint2f curve = new MatOfPoint2f(contours.get(i).toArray());
+				MatOfPoint2f curveAppr = new MatOfPoint2f();
+				double peri = Imgproc.arcLength(curve, true);
+
+				Imgproc.approxPolyDP(curve, curveAppr, 0.02 * peri, true);
+				if (curveAppr.total() == 4) { // different shapes found with 4
+												// points so add maximum area
+					curveApprRight = contours.get(i);
+					maxArea = contourarea;
+					System.out.println(contourarea + "Found");
 				}
-
+				;
 			}
+			;
 		}
+		Rect rect = Imgproc.boundingRect(curveApprRight);
+		System.out.println(rect.height);
+
+		System.out.println(rect.x + "," + rect.y + "," + rect.height + "," + rect.width);
+
+		Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
+				new Scalar(100, 100, 100),10);
+
+		Mat src = new MatOfPoint2f(new Point());
 		return image;
 	}
+
+	public static Mat fourPointTransformation(Mat image) {
+		double width = 1.34;
+		double length = 1.96;
+		double ratio = length / width;
+		return image;
+	};
 
 	public static Mat erodeDilate(Mat image, int erosionSize, int dilateSize) {
 		Mat elementErode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
@@ -162,7 +194,7 @@ public class getPicture {
 
 	public static Mat adaptiveThreshold(Mat image) {
 		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
-				14);
+				16);
 		return image;
 	}
 
