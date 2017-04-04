@@ -1,65 +1,41 @@
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.*;
-import java.net.URL;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.PointerInfo;
-import java.awt.Robot;
-import javax.swing.JFrame;
+
+import java.util.ArrayList;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.core.MatOfRect;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.objdetect.CascadeClassifier;
+import java.util.List;
 
-import com.atul.JavaOpenCV.Imshow;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import org.opencv.core.Size;
 
 public class getPicture {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		/*
-		 * Image image = null; try {
-		 * 
-		 * URL url = new URL("http://192.168.43.1:8080/shot.jpg"); image =
-		 * ImageIO.read(url);
-		 * 
-		 * File sourceimage = new
-		 * File("/Users/beemihae/Downloads/emmawatson.jpg"); image =
-		 * ImageIO.read(sourceimage); } catch (IOException e) {
-		 * e.printStackTrace(); }
-		 */
+
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		String path = "/Users/beemihae/Desktop/groundfloor.jpg";
-		String dstPath = "/Users/beemihae/Desktop/test.jpg";
-		
-		applySobel(path, dstPath);
-	
-	}
+		String dstPathSobel = "/Users/beemihae/Desktop/Sobel.jpg";
+		String dstPathHSV = "/Users/beemihae/Desktop/HSV.jpg";
 
-		
+		// applyHSV(path, dstPathHSV);
 
-	private static JFrame buildFrame() {
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(200, 200);
-		frame.setVisible(true);
-		return frame;
+		applySobel(path, dstPathSobel);
+
 	}
 
 	public static double[] RGBtoHSV(double r, double g, double b) {
@@ -101,50 +77,111 @@ public class getPicture {
 		return new double[] { h, s, v };
 	}
 
-	public void mouseClicked(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
-		System.out.println(x + "," + y);// these co-ords are relative to the
-										// component
+	public static void applySobel(String path, String dstPath) {
+		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);
+		//Mat image = Imgcodecs.imread(path, 0);
+		// Mat imgDst = new Mat(image.size());
+		Mat imgDst = Imgcodecs.imread(path);
+		System.out.println("start Sobel");
+
+		// imgDst = erodeDilate(image, 3, 3);
+
+		 //Imgproc.equalizeHist(image, image);
+		Imgproc.GaussianBlur(image, imgDst, new Size(23,23), 0, 0, 0);
+		// imgDst = erodeDilate(image,3,3);
+
+		//Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 1, 0);
+		//Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 0, 1);
+		imgDst = applyContours(imgDst, "Sobel");
+		imgDst = adaptiveThreshold(imgDst);
+		System.out.println("Sobel done");
+		Imgcodecs.imwrite(dstPath, imgDst);
+		
+		System.out.println("Written to " + dstPath);
+		/*
+		 * BufferedImage img = matToBufferedImage(imgDst);
+		 * JFrame frame = new JFrame(); frame.getContentPane().setLayout(new
+		 * FlowLayout()); frame.getContentPane().add(new JLabel((Icon) new
+		 * ImageIcon(img))); frame.pack(); frame.setVisible(true);
+		 * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 */
 	}
 
-	public static BufferedImage Mat2BufferedImage(Mat m) {
-		// Fastest code
-		// output can be assigned either to a BufferedImage or to an Image
+	public static void applyHSV(String path, String dstPath) {
+		Mat image = Imgcodecs.imread(path);
+		Mat imgDst = Imgcodecs.imread(path);
+		Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
+		System.out.println("Start HSV");
+		Imgproc.GaussianBlur(image, image, new Size(3, 3), 0, 0, 0);
+		Scalar minValues = new Scalar(0, 0, 0);
+		Scalar maxValues = new Scalar(37, 16, 71);
+		Core.inRange(image, minValues, maxValues, imgDst);
+		// imgDst = applyContours(imgDst, "HSV");
+		System.out.println("HSV done");
 
-		int type = BufferedImage.TYPE_BYTE_GRAY;
-		if (m.channels() > 1) {
-			type = BufferedImage.TYPE_3BYTE_BGR;
+		Imgcodecs.imwrite(dstPath, imgDst);
+
+		System.out.println("Written to " + dstPath);
+
+	}
+
+	public static Mat applyContours(Mat image, String type) {
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		if (type.equals("Sobel")) {
+			Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
 		}
-		int bufferSize = m.channels() * m.cols() * m.rows();
-		byte[] b = new byte[bufferSize];
-		m.get(0, 0, b); // get all the pixels
-		BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
-		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		System.arraycopy(b, 0, targetPixels, 0, b.length);
+		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+		for (int i = 0; i < contours.size(); i++) {
+			System.out.println(Imgproc.contourArea(contours.get(i)));
+			if (Imgproc.contourArea(contours.get(i)) > 50) {
+				Rect rect = Imgproc.boundingRect(contours.get(i));
+				System.out.println(rect.height);
+				if (rect.height > 28) {
+					// System.out.println(rect.x
+					// +","+rect.y+","+rect.height+","+rect.width);
+					Imgproc.rectangle(image, new Point(rect.x, rect.y),
+							new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 0, 255));
+
+				}
+
+			}
+		}
 		return image;
 	}
 
-	public static void applySobel(String path, String dstPath) {
-		Mat image = Imgcodecs.imread(path);
-		Mat imgDst = Imgcodecs.imread(path);
+	public static Mat erodeDilate(Mat image, int erosionSize, int dilateSize) {
+		Mat elementErode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+				new Size(2 * erosionSize + 1, 2 * erosionSize + 1));
+		Mat elementDilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+				new Size(2 * dilateSize + 1, 2 * dilateSize + 1));
+		Imgproc.erode(image, image, elementErode);
+		Imgproc.dilate(image, image, elementDilate);
+		return image;
+	}
 
-		System.out.println("start Sobel");
+	public static Mat adaptiveThreshold(Mat image) {
+		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
+				14);
+		return image;
+	}
 
-		Imgproc.GaussianBlur( image, image, new Size(5,5), 0, 0, 0 );
+	private static BufferedImage matToBufferedImage(Mat original) {
+		// init
+		BufferedImage image = null;
+		int width = original.width(), height = original.height(), channels = original.channels();
+		byte[] sourcePixels = new byte[width * height * channels];
+		original.get(0, 0, sourcePixels);
 
-		Imgproc.cvtColor(image, image, 6); // 6 is the constant for CV_BGR2GRAY
-		// Imgproc.GaussianBlur( image, image, Size(3.0,3.0), 0, 0, 0);
-		Imgproc.Sobel(image, imgDst, CvType.CV_16S, 1, 0);
-		Imgproc.Sobel(imgDst, imgDst, CvType.CV_16S, 0, 1);
+		if (original.channels() > 1) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		} else {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		}
+		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
 
-		System.out.println("Sobel done");
-
-		Imgcodecs.imwrite("/Users/beemihae/Desktop/test.jpg", imgDst);
-
-		System.out.println("Written to " + dstPath);
-		Imshow ims = new Imshow("Title");
-		ims.showImage(imgDst);
+		return image;
 	}
 
 }
