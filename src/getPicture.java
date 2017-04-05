@@ -30,8 +30,8 @@ public class getPicture {
 	public static void main(String[] args) {
 
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		String path = "/Users/beemihae/Desktop/groundfloor1.jpg";
-		String dstPathSobel = "/Users/beemihae/Desktop/filtered.jpg";
+		String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/beemihae/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
@@ -229,11 +229,16 @@ public class getPicture {
 			destination.add(temp);
 		}
 
-		double ratio = lengthImg / widthImg;
+		double ratioNeeded = lengthImg / widthImg;
 		destination.get(0).x = destination.get(1).x;
 		destination.get(3).y = destination.get(0).y;
 		destination.get(3).x = destination.get(2).x;
 		destination.get(2).y = destination.get(1).y;
+		double originalWidth = destination.get(2).x - destination.get(1).x;
+		double originalHeight = destination.get(1).y - destination.get(0).y;
+		System.out.println(originalWidth+" "+originalHeight);
+		double originalRatio = originalHeight/originalWidth;
+		double transformRatio = ratioNeeded/originalRatio;
 		// Imgproc.line(image, original.get(1), original.get(0), new Scalar(100,
 		// 100, 100), 20); // see lines of matching points
 		Mat source = Converters.vector_Point2f_to_Mat(original);
@@ -241,15 +246,16 @@ public class getPicture {
 		Mat transformation = Imgproc.getPerspectiveTransform(source, dst);
 
 		int lengthDst = (int) image.size().width;
-		int widthDst = (int) ((int) image.size().height * ratio);
+		int widthDst = (int) ( image.size().height * transformRatio );
 		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
 		return imgDst;
 	};
 
 	
-public static Mat adaptiveThreshold(Mat image) {
+	public static Mat adaptiveThreshold(Mat image) {
 		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
 				16);
 		return image;
