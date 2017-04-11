@@ -30,8 +30,8 @@ public class ProcesMap {
 	public static void main(String[] args) {
 
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		String path = "/Users/elias_debaere/Desktop/Ground_floor.jpg "; //path from original picture
-		String dstPathSobel = "/Users/elias_debaere/Desktop/Ground_floor1.jpg "; //path you want to write, you can choose a non-existing .jpg
+		String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/beemihae/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
@@ -263,7 +263,6 @@ public class ProcesMap {
 
 		return imgDst;
 	};
-
 	
 	public static Mat adaptiveThreshold(Mat image) {
 		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
