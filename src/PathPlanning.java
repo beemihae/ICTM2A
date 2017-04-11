@@ -1,77 +1,103 @@
 import java.util.*;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.sensor.EV3IRSensor;
+import lejos.hardware.Button;
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.Font;
+import lejos.hardware.lcd.GraphicsLCD;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3IRSensor;
+import lejos.robotics.MirrorMotor;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.navigation.Move;
+import lejos.robotics.navigation.MoveListener;
+import lejos.robotics.navigation.MovePilot;
+import lejos.robotics.navigation.MoveProvider;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
+import lejos.hardware.Button;
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.Font;
+import lejos.hardware.lcd.GraphicsLCD;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3IRSensor;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
+import lejos.hardware.Button;
 
+import java.util.ArrayList;
 import com.sun.javafx.geom.Edge;
+import java.lang.Object
+import java.awt.geom.Point2D
+import java.awt.Point
 
 import javafx.scene.Node;
 
 public class PathPlanning {
-
-   // assumes Nodes are numbered 0, 1, ... n and that the source Node is 0
-   ArrayList<Node> findShortestPath(Node[] nodes, Edge[] edges, Node target) {
-       int[][] Weight = initializeWeight(nodes, edges);
-       int[] D = new int[nodes.length];
-       Node[] P = new Node[nodes.length];
-       ArrayList<Node> C = new ArrayList<Node>();
-
-       // initialize:
-       // (C)andidate set,
-       // (D)yjkstra special path length, and
-       // (P)revious Node along shortest path
-       for(int i=0; i<nodes.length; i++){
-           C.add(nodes[i]);
-           D[i] = Weight[0][i];
-           if(D[i] != Integer.MAX_VALUE){
-               P[i] = nodes[0];
-           }
-       }
-
-       // crawl the graph
-       for(int i=0; i<nodes.length-1; i++){
-           // find the lightest Edge among the candidates
-           int l = Integer.MAX_VALUE;
-           Node n = nodes[0];
-           for(Node j : C){
-               if(D[j.name] < l){
-                   n = j;
-                   l = D[j.name];
-               }
-           }
-           C.remove(n);
-
-           // see if any Edges from this Node yield a shorter path than from source->that Node
-           for(int j=0; j<nodes.length-1; j++){
-               if(D[n.name] != Integer.MAX_VALUE && Weight[n.name][j] != Integer.MAX_VALUE && D[n.name]+Weight[n.name][j] < D[j]){
-                   // found one, update the path
-                   D[j] = D[n.name] + Weight[n.name][j];
-                   P[j] = n;
-               }
-           }
-       }
-       // we have our path. reuse C as the result list
-       C.clear();
-       int loc = target.name;
-       C.add(target);
-       // backtrack from the target by P(revious), adding to the result list
-       while(P[loc] != nodes[0]){
-           if(P[loc] == null){
-               // looks like there's no path from source to target
-               return null;
-           }
-           C.add(0, P[loc]);
-           loc = P[loc].name;
-       }
-       C.add(0, nodes[0]);
-       return C;
+   
+   \\GridMesh extends FourWayGridMesh en nieuwe constructor met ingebouwde functie om de nodes te deleten die niet mogen
+    \\Daarna nodepathfinder met dat mesh om te berekenen
+     \\ wat ik krijg van elias: array[x][y] als volgt:
+   
+   \\ startpoint     
+   \\ bovenhoeklinkso bovenhoekrechtso   onderhoekrechtso   onderhoeklinkso   tussenhoekeventueel
+   \\ bovenhoeklinks1 bovenhoekrechts1   onderhoekrechts1   onderhoeklinks1
+   \\ ...               ...               ...               ...
+   
+   public static void main(String[] args){
+ public AstarSearchAlgorithm alg = new AstarSearchAlgorithm();
+ public int dimx = 1030;
+ public int dimy = 2048;
+ public Point  arr[][] = new Point[][];
+arr[0][0]=new Point(10 , 10);  
+arr[1][0]=new Point(5 , 95);  
+arr[1][1]=new Point(95 , 95);  
+arr[1][2]=new Point(95 , 5);  
+arr[1][3]=new Point(5 , 5);  
+arr[2][0]=new Point(45 , 55);
+arr[2][1]=new Point(55 , 55);     
+arr[2][2]=new Point(55 , 45);
+arr[2][3]=new Point(45 , 45);
+arr[3][0]=new Point(25 , 65);
+arr[3][1]=new Point(65 , 65);
+arr[3][2]=new Point(65 , 75);
+arr[3][3]=new Point(70 , 75);
+arr[3][4]=new Point(70 , 60);
+arr[3][5]=new Point(25 , 60);
+      
+  public Rectangle boundingRect = new Rectangle(0, dimy, dimx, dimy);
+ public line lines[] = new line[];
+      for(int i=0;i<dimx;i++){
+      lines[i] = Line(i+1, 0, i+1, dimy);
+      }
+      for(int j=0;j<dimy;j++){
+      lines[j+dimx] = Line(0, j+1, dimx , j+1);
+      }
+      
+ public LineMap map = new LineMap( lines, boundingRect);
+ public GridMesh mesh = new GridMesh(map, 1.2060546875 , 0.25);
+ public NodePathFinder Pathfinder = new NodePathFinder(alg, mesh); 
+      
    }
-
-   private int[][] initializeWeight(Node[] nodes, Edge[] edges){
-       int[][] Weight = new int[nodes.length][nodes.length];
-       for(int i=0; i<nodes.length; i++){
-           Arrays.fill(Weight[i], Integer.MAX_VALUE);
-       }
-       for(Edge e : edges){
-           Weight[e.from.name][e.to.name] = e.weight;
-       }
-       return Weight;
+class GridMesh extends FourWayGridMesh{
+public GridMesh(LineMap map, float gridSpace, float clearance, Point[][] arr)  {
+		super(map,gridspace,clearance);
+   for(int j=0;j<arr.length;j++){      
+   for(int i=0;i<arr[i].length,i++){
+            
+      }
    }
+	}
+}
 }
