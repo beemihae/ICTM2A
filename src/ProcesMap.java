@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.opencv.core.Size;
 
-public class getPicture {
+public class ProcesMap {
 
 	public static void main(String[] args) {
 
@@ -249,8 +249,18 @@ public class getPicture {
 		int widthDst = (int) ( image.size().height * transformRatio );
 		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+		String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathOriginal = "/Users/beemihae/Desktop/original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		Mat map = Imgcodecs.imread(path);
+		
+		Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
+		
 		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
+		Imgproc.resize(map, map, map.size()); // stretch the picture
+		Imgcodecs.imwrite(dstPathOriginal, map);
+
 		return imgDst;
 	};
 
@@ -272,7 +282,6 @@ public class getPicture {
 	}
 
 	private static BufferedImage matToBufferedImage(Mat original) {
-		// init
 		BufferedImage image = null;
 		int width = original.width(), height = original.height(), channels = original.channels();
 		byte[] sourcePixels = new byte[width * height * channels];

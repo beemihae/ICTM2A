@@ -1,4 +1,4 @@
-package test;
+
 
 
 
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 
 
  
-public class Test {
+public class Pilot {
 	static RobotPilot pilot;
 	static WheeledChassis chassis;
 	static void createPilot () {
@@ -79,7 +79,7 @@ class RobotPilot extends MovePilot {
 	}
 	
 	class RotationListener implements MoveListener {
-		private int angle=45;    // sensor zal over 45° draaien
+		private int angle=45;    // sensor zal over 45ï¿½ draaien
 		float sign;
 		public void moveStarted(Move event, MoveProvider mp) {
 			if (event.getMoveType().equals(Move.MoveType.ROTATE)){
@@ -110,7 +110,7 @@ class Drive implements Behavior {
 	public void action() {
 		_surpressed = false;
 		while (!_surpressed) {
-			Test.pilot.arcForward(100);
+			Pilot.pilot.arcForward(100);
 		}
 	}
 	
