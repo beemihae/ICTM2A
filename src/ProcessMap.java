@@ -1,6 +1,3 @@
-import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,14 +15,13 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.opencv.utils.Converters;
 
-import com.sun.javafx.geom.Curve;
 
 import org.opencv.imgcodecs.Imgcodecs;
 import java.util.List;
 
 import org.opencv.core.Size;
 
-public class ProcesMap {
+public class ProcessMap {
 
 	public static void main(String[] args) {
 
@@ -35,7 +31,8 @@ public class ProcesMap {
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
-		Mat filtImage = applyFilters(path, dstPathSobel, width, height);
+		//getRedDot();
+		//Mat filtImage = applyFilters(path, dstPathSobel, width, height);
 	}
 
 	public static double[] RGBtoHSV(double r, double g, double b) {
@@ -297,4 +294,15 @@ public class ProcesMap {
 		return image;
 	}
 
+	public static void getRedDot(){
+		String path = "/Users/beemihae/Desktop/original_filtered_elias.jpg"; //path from original picture
+		String dstPath = "/Users/beemihae/Desktop/filtered2.jpg"; //path you want to write, you can choose a non-existing .jpg
+		Mat image = Imgcodecs.imread(path,Imgproc.COLOR_RGB2HSV);
+		Mat imgDst = Imgcodecs.imread(path,Imgproc.COLOR_RGB2HSV);
+		Scalar minValues = new Scalar(105,180,40);
+		Scalar maxValues = new Scalar(120,260,100);
+		Core.inRange(image, minValues, maxValues, imgDst);
+		Imgcodecs.imwrite(dstPath, imgDst);
+		
+	}
 }
