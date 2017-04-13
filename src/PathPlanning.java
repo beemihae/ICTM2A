@@ -59,6 +59,7 @@ public class PathPlanning {
  public AstarSearchAlgorithm alg = new AstarSearchAlgorithm();
  public int dimx = 1030;
  public int dimy = 2048;
+ public float heading = 45;
  public Point  arr[][] = new Point[][];
 arr[0][0]=new Point(10 , 10);  
 arr[1][0]=new Point(5 , 95);  
@@ -75,7 +76,9 @@ arr[3][2]=new Point(65 , 75);
 arr[3][3]=new Point(70 , 75);
 arr[3][4]=new Point(70 , 60);
 arr[3][5]=new Point(25 , 60);
-      
+ public Point end = new Point(85,85);
+public WayPoint endpoint = new WayPoint(end);
+public Pose startpoint = new Pose(arr[0][0].getX,arr[0][0].getY,heading);
   public Rectangle boundingRect = new Rectangle(0, dimy, dimx, dimy);
  public line lines[] = new line[];
       for(int i=0;i<dimx;i++){
@@ -86,18 +89,29 @@ arr[3][5]=new Point(25 , 60);
       }
       
  public LineMap map = new LineMap( lines, boundingRect);
+	   map.createSVGFile(linemap);
  public GridMesh mesh = new GridMesh(map, 1.2060546875 , 0.25);
  public NodePathFinder Pathfinder = new NodePathFinder(alg, mesh); 
-      
+ public Path shortestpath = Pathfinder.findRoute(startpoint,endpoint);
+ system.out.println(shortestpath.tostring());
    }
 class GridMesh extends FourWayGridMesh{
 public GridMesh(LineMap map, float gridSpace, float clearance, Point[][] arr)  {
 		super(map,gridspace,clearance);
    for(int j=0;j<arr.length;j++){      
-   for(int i=0;i<arr[i].length,i++){
-            
-      }
+   	for(int i=0;i<arr[j].length,i++){
+            switch(arr.length)
+		case 3:
+		break;
+		case 4:
+		break;
+		case 5:
+		break;
+		case 6:
+		break;
+		case 7
+      	}
    }
-	}
+}
 }
 }
