@@ -17,16 +17,16 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.opencv.utils.Converters;
-import org.opencv.imgcodecs.*;
-//import org.opencv.highgui.Highgui;
+//import org.opencv.imgcodecs.*;
+import org.opencv.highgui.Highgui;
 
 import java.util.List;
 
 import org.opencv.core.Size;
 
-public class ProcessMap {
+public class ProcessMapLejos {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
 		String dstPathSobel = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Ground_floor1.jpg"; //path you want to write, you can choose a non-existing .jpg
@@ -76,12 +76,12 @@ public class ProcessMap {
 	}
 
 	public static Mat applyFilters(String path, String dstPath, double width, double height) {
-		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
+		Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);     //compatibel met openCV van lejos
+		//Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);          //niet compatibel met openCV van lejos
 		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
 		// Mat imgDst = new Mat(image.size());     
-		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
-		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
+		Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
+		//Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
 		System.out.println("start Gaussian Threshold");
 
 		// imgDst = erodeDilate(image, 3, 3);
@@ -106,18 +106,18 @@ public class ProcessMap {
 		System.out.println("Transformation Done");
 		System.out.println("Gaussian Threshold Done");
 
-		Imgcodecs.imwrite(dstPath, imgDst1);      //enkel compatibel met nieuwere versie van openCV dan in lejos
-		//Highgui.imwrite(dstPath, imgDst1);          //compatibel met openCV versie van lejos
+		//Imgcodecs.imwrite(dstPath, imgDst1);      //enkel compatibel met nieuwere versie van openCV dan in lejos
+		Highgui.imwrite(dstPath, imgDst1);          //compatibel met openCV versie van lejos
 
 		System.out.println("Written to " + dstPath);
 		return imgDst;
 	}
 
 	public static void applyHSV(String path, String dstPath) {
-		Mat image = Imgcodecs.imread(path);     //niet compatibel
-		//Mat image = Highgui.imread(path);         //compatibel met lejos
-		Mat imgDst = Imgcodecs.imread(path);    //niet compatibel
-		//Mat imgDst = Highgui.imread(path);        //compatibel
+		//Mat image = Imgcodecs.imread(path);     //niet compatibel
+		Mat image = Highgui.imread(path);         //compatibel met lejos
+		//Mat imgDst = Imgcodecs.imread(path);    //niet compatibel
+		Mat imgDst = Highgui.imread(path);        //compatibel
 		Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
 		System.out.println("Start HSV");
 		Imgproc.GaussianBlur(image, image, new Size(3, 3), 0, 0, 0);
@@ -127,8 +127,8 @@ public class ProcessMap {
 		// imgDst = applyContours(imgDst, "HSV");
 		System.out.println("HSV done");
 
-		Imgcodecs.imwrite(dstPath, imgDst);     //niet compatibel
-		//Highgui.imwrite(dstPath, imgDst);         //compatibel
+		//Imgcodecs.imwrite(dstPath, imgDst);     //niet compatibel
+		Highgui.imwrite(dstPath, imgDst);         //compatibel
 
 		System.out.println("Written to " + dstPath);
 
@@ -256,16 +256,16 @@ public class ProcessMap {
 		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
 		String dstPathOriginal = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
-		Mat map = Imgcodecs.imread(path);    //niet compatibel
-		//Mat map = Highgui.imread(path);        //compatibel
+		//Mat map = Imgcodecs.imread(path);    //niet compatibel
+		Mat map = Highgui.imread(path);        //compatibel
 		
 		Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
 		
 		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
 		Imgproc.resize(map, map, map.size()); // stretch the picture
-		Imgcodecs.imwrite(dstPathOriginal, map);    //niet compatibel
-		//Highgui.imwrite(dstPathOriginal, map);          //compatibel
+		//Imgcodecs.imwrite(dstPathOriginal, map);    //niet compatibel
+		Highgui.imwrite(dstPathOriginal, map);          //compatibel
 
 		return imgDst;
 	};
