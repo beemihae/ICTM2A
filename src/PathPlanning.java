@@ -56,6 +56,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 //import lejos.robotics.pathfinding;
 //import javafx.scene.Node;
+import java.lang.Throwable;
+import java.lang.Error;
 
 public class Pathplanning {
    
@@ -67,13 +69,128 @@ public class Pathplanning {
    // bovenhoeklinkso bovenhoekrechtso   onderhoekrechtso   onderhoeklinkso   tussenhoekeventueel
    // bovenhoeklinks1 bovenhoekrechts1   onderhoekrechts1   onderhoeklinks1
    // ...               ...               ...               ...
+	
+	class GridMesh extends FourWayGridMesh{						// nieuwe constructor die punten van obstakels weglaat
+		public GridMesh(LineMap map, float gridSpace, float clearance, Point[][] arr)  {
+				super(map,gridSpace,clearance);
+			String foutboodschap = new String("Punt niet gevonden.");
+		   for(int j=0;j<arr.length;j++){
+		            switch(arr[j].length){
+				case 4:{
+					for(int k=0;k<(arr[j][0].y-arr[j][2].y);k++){      
+						for(int l=0;l<(arr[j][1].x-arr[j][0].x);l++){
+							Node temp1 = new Node(l,k);
+							boolean right = super.removeNode(temp1);
+							if(right==false){
+								Error notfound = new Error(foutboodschap);
+								}
+							System.out.println( right );
+						}
+					}
+					break;
+				}
+				case 6:
+					if(arr[j][5].y>arr[j][2].y){ //ligt punt 6 boven punt 3?
+							if(arr[j][5].x>arr[j][4].x){ //ligt punt 6 rechts van punt 5? 
+									for(int k=0;k<(arr[j][0].y-arr[j][5].y-1);k++){     //bovenste deel van de fig 
+										for(int l=0;l<(arr[j][1].x-arr[j][0].x);l++){
+											Node temp = new Node(arr[j][5].x+l,arr[j][5].y+k+1);
+											boolean right = super.removeNode(temp);
+											if(right==false){
+												Error notfound = new Error(foutboodschap);
+											}
+											System.out.println(right);
+										}
+									}
+									for(int m=0;m<(arr[j][5].y-arr[j][2].y);m++){      //onderste deel van de figuur
+										for(int n=0;n<(arr[j][2].x-arr[j][4].x);n++){
+											Node temp = new Node(arr[j][4].x+n,arr[j][2].y+m);
+											boolean right = super.removeNode(temp);
+											if(right==false){
+												Error notfound = new Error(foutboodschap);
+											}
+											System.out.println(right);
+										}
+									}
+							}else{
+								for(int k=0;k<(arr[j][0].y-arr[j][5].y);k++){     //bovenste deel van de fig 
+									for(int l=0;l<(arr[j][1].x-arr[j][0].x);l++){
+										Node temp = new Node(arr[j][5].x+l,arr[j][5].y+k);
+										boolean right = super.removeNode(temp);
+										if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+										System.out.println(right);
+									}
+								}
+								for(int m=0;m<(arr[j][5].y-arr[j][2].y-1);m++){      //onderste deel van de figuur
+									for(int n=0;n<(arr[j][2].x-arr[j][4].x);n++){
+										Node temp = new Node(arr[j][4].x+n,arr[j][2].y+m);
+										boolean right = super.removeNode(temp);
+										if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+										System.out.println(right);
+									}
+								}
+							}
+					}else{
+						if(arr[j][3].x>arr[j][2].x){ //ligt punt 4 rechts van punt 3? 
+								for(int k=0;k<(arr[j][0].y-arr[j][2].y-1);k++){     //bovenste deel van de fig 
+									for(int l=0;l<(arr[j][1].x-arr[j][0].x);l++){
+										Node temp = new Node(arr[j][0].x+l,arr[j][2].y+k+1);
+										boolean right = super.removeNode(temp);
+										if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+										System.out.println(right);
+									}
+								}
+								for(int m=0;m<(arr[j][2].y-arr[j][5].y);m++){      //onderste deel van de figuur
+									for(int n=0;n<(arr[j][4].x-arr[j][5].x);n++){
+										Node temp = new Node(arr[j][5].x+n,arr[j][5].y+m);
+										boolean right = super.removeNode(temp);
+										if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+										System.out.println(right);
+									}
+								}
+						}else{
+							for(int k=0;k<(arr[j][0].y-arr[j][2].y);k++){     //bovenste deel van de fig 
+								for(int l=0;l<(arr[j][1].x-arr[j][0].x);l++){
+									Node temp = new Node(arr[j][0].x+l,arr[j][2].y+k);
+									boolean right = super.removeNode(temp);
+									if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+									System.out.println(right);
+								}
+							}
+							for(int m=0;m<(arr[j][2].y-arr[j][5].y-1);m++){      //onderste deel van de figuur
+								for(int n=0;n<(arr[j][3].x-arr[j][5].x);n++){
+									Node temp = new Node(arr[j][5].x+n,arr[j][5].y+m);
+									boolean right = super.removeNode(temp);
+									if(right==false){
+											Error notfound = new Error(foutboodschap);
+											}
+									System.out.println(right);
+								}
+							}	
+						}}
+				break;
+				default:
+				break;
+			    	}}
+		}
+		}
    
    public static void main(String[] args) throws IOException, DestinationUnreachableException{
  AstarSearchAlgorithm alg = new AstarSearchAlgorithm(); // nieuw algoritme maken om later te gebruiken
  int dimx = 1030;					// x dimensie van de foto
  int dimy = 2048;					// y dimensie van de foto
  float heading = 45;					// hoek met de x as van de startrichting van de robot
- Point  arr[][] = new Point[3][5];				// input die normaal van elias komt
+ Point  arr[][] = new Point[4][6];				// input die normaal van elias komt
 arr[0][0]=new Point(10 , 10);  
 arr[1][0]=new Point(5 , 95);  
 arr[1][1]=new Point(95 , 95);  
@@ -105,124 +222,11 @@ Pose startpoint = new Pose(arr[0][0].x,arr[0][0].y,heading);	// startpunt uit el
 	   map.createSVGFile(linemap);
 float kotjesbreedte = (float)1.2060546875;
 float fout = (float)0.25;
-GridMesh mesh = new GridMesh(map, kotjesbreedte , fout, arr);			// mesh maken van de map voor in de methode
+GridMesh mesh = new Pathplanning().new GridMesh(map, kotjesbreedte , fout, arr);			// mesh maken van de map voor in de methode
 NodePathFinder Pathfinder = new NodePathFinder(alg, mesh); 		// nieuwe nodepath voor in de methode
 Path shortestpath = Pathfinder.findRoute(startpoint,endpoint);		// het momenteel kortste pad
  System.out.println(shortestpath.toString());
    }
    
-class GridMesh extends FourWayGridMesh{						// nieuwe constructor die punten van obstakels weglaat
-public GridMesh(LineMap map, float gridSpace, float clearance, Point[][] arr)  {
-		super(map,gridSpace,clearance);
-	
-   for(int j=0;j<arr.length;j++){
-            switch(arr[j].length){
-		case 4:{
-			for(int k=0;k<(arr[j][0].getY-arr[j][2].getY);k++){      
-				for(int l=0;l<(arr[j][1].getX-arr[j][0].getX);l++){
-					Node temp1 = new Node(l,k);
-					boolean right = super.removeNode(temp1);
-					if(right==false){
-						public Error notfound = new Error('Punt niet gevonden.');
-						}
-					system.out.println( right );
-				}
-			}
-			break;
-		}
-		case 6:
-			if(arr[j][5].getY>arr[j][2].getY){ //ligt punt 6 boven punt 3?
-					if(arr[j][5].getX>arr[j][4].getX){ //ligt punt 6 rechts van punt 5? 
-							for(int k=0;k<(arr[j][0].getY-arr[j][5].getY-1);k++){     //bovenste deel van de fig 
-								for(int l=0;l<(arr[j][1].getX-arr[j][0].getX);l++){
-									public Node temp = new Node(arr[j][5].getX+l,arr[j][5].getY+k+1);
-									public boolean right = super.removeNode(temp1);
-									if(right==false){
-										public Error notfound = new Error('Punt niet gevonden.');
-									}
-									system.out.println(right);
-								}
-							}
-							for(int m=0;m<(arr[j][5].getY-arr[j][2].getY);m++){      //onderste deel van de figuur
-								for(int n=0;n<(arr[j][2].getX-arr[j][4].getX);n++){
-									public Node temp = new Node(arr[j][4].getX+n,arr[j][2].getY+m);
-									public boolean right = super.removeNode(temp1);
-									if(right==false){
-										public Error notfound = new Error('Punt niet gevonden.');
-									}
-									system.out.println(right);
-								}
-							}
-					}else{
-						for(int k=0;k<(arr[j][0].getY-arr[j][5].getY);k++){     //bovenste deel van de fig 
-							for(int l=0;l<(arr[j][1].getX-arr[j][0].getX);l++){
-								public Node temp = new Node(arr[j][5].getX+l,arr[j][5].getY+k);
-								public boolean right = super.removeNode(temp1);
-								if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-								system.out.println(right);
-							}
-						}
-						for(int m=0;m<(arr[j][5].getY-arr[j][2].getY-1);m++){      //onderste deel van de figuur
-							for(int n=0;n<(arr[j][2].getX-arr[j][4].getX);n++){
-								public Node temp = new Node(arr[j][4].getX+n,arr[j][2].getY+m);
-								public boolean right = super.removeNode(temp1);
-								if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-								system.out.println(right);
-							}
-						}
-					}
-			}else{
-				if(arr[j][3].getX>arr[j][2].getX){ //ligt punt 4 rechts van punt 3? 
-						for(int k=0;k<(arr[j][0].getY-arr[j][2].getY-1);k++){     //bovenste deel van de fig 
-							for(int l=0;l<(arr[j][1].getX-arr[j][0].getX);l++){
-								public Node temp = new Node(arr[j][0].getX+l,arr[j][2].getY+k+1);
-								public boolean right = super.removeNode(temp1);
-								if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-								system.out.println(right);
-							}
-						}
-						for(int m=0;m<(arr[j][2].getY-arr[j][5].getY);m++){      //onderste deel van de figuur
-							for(int n=0;n<(arr[j][4].getX-arr[j][5].getX);n++){
-								public Node temp = new Node(arr[j][5].getX+n,arr[j][5].getY+m);
-								public boolean right = super.removeNode(temp1);
-								if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-								system.out.println(right);
-							}
-						}
-				}else{
-					for(int k=0;k<(arr[j][0].getY-arr[j][2].getY);k++){     //bovenste deel van de fig 
-						for(int l=0;l<(arr[j][1].getX-arr[j][0].getX),l++){
-							public Node temp = new Node(arr[j][0].getX+l,arr[j][2].getY+k);
-							public boolean right = super.removeNode(temp1);
-							if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-							system.out.println(right);
-						}
-					}
-					for(int m=0;m<(arr[j][2].getY-arr[j][5].getY-1);m++){      //onderste deel van de figuur
-						for(int n=0;n<(arr[j][3].getX-arr[j][5].getX),n++){
-							public Node temp = new Node(arr[j][5].getX+n,arr[j][5].getY+m);
-							public boolean right = super.removeNode(temp1);
-							if(right==false){
-									public Error notfound = new Error('Punt niet gevonden.');
-									}
-							system.out.println(right);
-						}
-					}	
-				}}
-		break;
-		default:
-		break;
-	    	}}
-}
-}
+
 }
