@@ -28,13 +28,10 @@ public class ProcessMap {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-<<<<<<< Updated upstream:src/ProcessMap.java
-		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
-		String dstPathSobel = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Ground_floor1.jpg"; //path you want to write, you can choose a non-existing .jpg
-=======
+
 		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
 		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
->>>>>>> Stashed changes:src/ProcesMap.java
+
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
