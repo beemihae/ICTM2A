@@ -190,6 +190,26 @@ public class Pathplanning {
  int dimx = 1030;					// x dimensie van de foto
  int dimy = 2048;					// y dimensie van de foto
  float heading = 45;					// hoek met de x as van de startrichting van de robot
+
+ArrayList<Point[]> stuff = new ArrayList<Point>();
+	    Point  arr[] = new Point[1];
+	   arr[0]=new Point(10 , 10); 
+	   stuff.add(arr);
+	   Point  arr1[] = new Point[4];
+	   arr[0]=new Point(5 , 95);
+	   arr[1]=new Point(95 , 95);
+	   arr[2]=new Point(95 , 95);
+	   arr[3]=new Point(95 , 95);
+	   stuff.add(arr);
+	   Point  arr2[] = new Point[1];
+	   arr[0]=new Point(10 , 10);
+	   arr[1]=new Point(95 , 95);
+	   arr[2]=new Point(95 , 95);
+	   arr[3]=new Point(95 , 95);
+	   stuff.add(arr);
+	   Point  arr3[] = new Point[1];
+	   arr[0]=new Point(10 , 10); 
+	   stuff.add(arr);
  Point  arr[][] = new Point[4][6];				// input die normaal van elias komt
 arr[0][0]=new Point(10 , 10);  
 arr[1][0]=new Point(5 , 95);  
