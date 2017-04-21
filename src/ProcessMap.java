@@ -28,8 +28,13 @@ public class ProcessMap {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+<<<<<<< Updated upstream:src/ProcessMap.java
 		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
 		String dstPathSobel = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Ground_floor1.jpg"; //path you want to write, you can choose a non-existing .jpg
+=======
+		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+>>>>>>> Stashed changes:src/ProcesMap.java
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
@@ -76,12 +81,18 @@ public class ProcessMap {
 	}
 
 	public static Mat applyFilters(String path, String dstPath, double width, double height) {
+<<<<<<< Updated upstream:src/ProcessMap.java
 		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
 		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
 		// Mat imgDst = new Mat(image.size());     
 		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
 		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
+=======
+		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);
+		// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
+		Mat imgDst = Imgcodecs.imread(path);
+>>>>>>> Stashed changes:src/ProcesMap.java
 		System.out.println("start Gaussian Threshold");
 
 		// imgDst = erodeDilate(image, 3, 3);
@@ -254,18 +265,29 @@ public class ProcessMap {
 		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+<<<<<<< Updated upstream:src/ProcessMap.java
 		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
 		String dstPathOriginal = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 		Mat map = Imgcodecs.imread(path);    //niet compatibel
 		//Mat map = Highgui.imread(path);        //compatibel
+=======
+		//String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		//String dstPathOriginal = "/Users/beemihae/Desktop/original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		//Mat map = Imgcodecs.imread(path);
+>>>>>>> Stashed changes:src/ProcesMap.java
 		
-		Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
+		//Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
 		
 		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
+<<<<<<< Updated upstream:src/ProcessMap.java
 		Imgproc.resize(map, map, map.size()); // stretch the picture
 		Imgcodecs.imwrite(dstPathOriginal, map);    //niet compatibel
 		//Highgui.imwrite(dstPathOriginal, map);          //compatibel
+=======
+		//Imgproc.resize(map, map, map.size()); // stretch the picture
+		//Imgcodecs.imwrite(dstPathOriginal, map);
+>>>>>>> Stashed changes:src/ProcesMap.java
 
 		return imgDst;
 	};
