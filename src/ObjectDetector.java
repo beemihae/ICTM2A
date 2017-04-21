@@ -10,8 +10,16 @@ public class ObjectDetector {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+<<<<<<< Updated upstream
 		String path = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg";
 		String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
+=======
+		//String path = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg";
+		//String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
+		String path = "/Users/beemihae/Desktop/filtered.jpg"; //path from original picture
+		String dstPath = "/Users/beemihae/Desktop/filtered1.jpg"; //path you want to write, you can choose a non-existing .jpg
+		
+>>>>>>> Stashed changes
 		
 		System.out.println("start");
 		

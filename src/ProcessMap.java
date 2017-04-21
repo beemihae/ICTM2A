@@ -1,3 +1,8 @@
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -6,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+>>>>>>> origin/master
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -20,6 +26,18 @@ import org.opencv.utils.Converters;
 import org.opencv.imgcodecs.*;
 //import org.opencv.highgui.Highgui;
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+import org.opencv.imgcodecs.Imgcodecs;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
+=======
+>>>>>>> origin/master
+>>>>>>> Stashed changes
 import java.util.List;
 
 import org.opencv.core.Size;
@@ -28,6 +46,7 @@ public class ProcessMap {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+<<<<<<< Updated upstream
 
 		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
 		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
@@ -35,6 +54,25 @@ public class ProcessMap {
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
+=======
+<<<<<<< HEAD
+		//System.out.println("hello");
+		String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/beemihae/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		double width = 1.34; // width of biggest square, needed to calibrate the
+								// screen
+		double height = 1.96;
+		//getRedDot();
+=======
+
+		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+
+		double width = 1.34; // width of biggest square, needed to calibrate the
+								// screen
+		double height = 1.96;
+>>>>>>> origin/master
+>>>>>>> Stashed changes
 		Mat filtImage = applyFilters(path, dstPathSobel, width, height);
 	}
 
@@ -82,12 +120,21 @@ public class ProcessMap {
 		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
 		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 		// Mat imgDst = new Mat(image.size());     
 		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
 		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
 =======
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);
 		// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
+<<<<<<< Updated upstream
+=======
+>>>>>>> origin/master
+>>>>>>> Stashed changes
 		Mat imgDst = Imgcodecs.imread(path);
 >>>>>>> Stashed changes:src/ProcesMap.java
 		System.out.println("start Gaussian Threshold");
@@ -306,7 +353,7 @@ public class ProcessMap {
 		return image;
 	}
 
-	private static BufferedImage matToBufferedImage(Mat original) {
+	public static BufferedImage matToBufferedImage(Mat original) {
 		BufferedImage image = null;
 		int width = original.width(), height = original.height(), channels = original.channels();
 		byte[] sourcePixels = new byte[width * height * channels];
