@@ -70,6 +70,14 @@ public class PathPlanning2 {
 		FourWayGridMesh gridMesh = new FourWayGridMesh(map, gridSpace, clearance);
 		NodePathFinder padvinder = new NodePathFinder(new AstarSearchAlgorithm(), gridMesh);
 		Path pad = padvinder.findRoute(new Pose(1.7f, 1.1f, 45), new Waypoint(new Point(2f,8f)));
+		ArrayList<double[]> waypoints = new ArrayList<double[]>();
+		for (Waypoint waypoint : pad) {
+			waypoints.add(new double[]{waypoint.x,waypoint.y});
+		}
+		for (int i = 0; i<waypoints.size(); i++) {
+			System.out.println("x"+i+" = "+waypoints.get(i)[0]);
+			System.out.println("y"+i+" = "+waypoints.get(i)[1]+"\n");
+		}
 		PoseProvider ppv = new OdometryPoseProvider(Pilot.pilot);
 		Navigator kapitein = new Navigator(Pilot.pilot, ppv);
 		kapitein.followPath(pad);
