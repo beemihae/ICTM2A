@@ -66,6 +66,8 @@ public class PathPlanning2 {
 		float[][] boundingPoints = new float[][]{{1.1f,0.5f},{10.5f,0.5f},{10.5f,11.5f},{1.1f,11.5f}};
 		ArrayList<float[][]> contouren = new ArrayList<float[][]>();
 		contouren.add(new float[][]{{3.5f, 4f},{6f, 4.5f},{5f, 6.5f},{2f,5f}});
+		
+		
 		LineMap map = generateMap(boundingPoints, contouren);
 		FourWayGridMesh gridMesh = new FourWayGridMesh(map, gridSpace, clearance);
 		NodePathFinder padvinder = new NodePathFinder(new AstarSearchAlgorithm(), gridMesh);

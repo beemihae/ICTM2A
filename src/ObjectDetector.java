@@ -10,18 +10,17 @@ public class ObjectDetector {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-<<<<<<< Updated upstream
+		
 		String path = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg";
 		String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
-=======
-		//String path = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg";
-		//String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
-		String path = "/Users/beemihae/Desktop/filtered.jpg"; //path from original picture
-		String dstPath = "/Users/beemihae/Desktop/filtered1.jpg"; //path you want to write, you can choose a non-existing .jpg
+
 		
->>>>>>> Stashed changes
+		//String path = "/Users/beemihae/Desktop/filtered.jpg"; 
+		//String dstPath = "/Users/beemihae/Desktop/filtered1.jpg";
 		
-		System.out.println("start");
+
+		
+		System.out.println("Start Object Detection");
 		
 		//inlezen
 		Mat image_orig = Imgcodecs.imread(path);
@@ -32,6 +31,11 @@ public class ObjectDetector {
 		//contours selecteren
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+		
+		//defenieren kleinste object
+		
+		
+		
 		
 		List<Point[]> rectangle_approx = new ArrayList<Point[]>();
 		Point[] corners= new Point[4];
@@ -57,14 +61,18 @@ public class ObjectDetector {
 			rectangle_approx.add(corners);
 			
 			//teken de hoekpunten van vierhoek i
-			Imgproc.circle(image_orig, rectangle_approx.get(i)[0], 10, new Scalar(0,255,0),10);
-			Imgproc.circle(image_orig, rectangle_approx.get(i)[1], 10, new Scalar(0,255,0),10);
-			Imgproc.circle(image_orig, rectangle_approx.get(i)[2], 10, new Scalar(0,255,0),10);
-			Imgproc.circle(image_orig, rectangle_approx.get(i)[3], 10, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[0], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[1], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[2], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[3], 3, new Scalar(0,255,0),10);
+			//Remark function circle in Lejos: Core. ; under opencv: under Imgproc.
+			
 			
 		}
 		
 		Imgcodecs.imwrite(dstPath, image_orig);
+		
+		System.out.println("Ended Object Detection");
 		
 		
 

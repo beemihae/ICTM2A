@@ -1,15 +1,5 @@
-
-import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-
-import org.opencv.core.*;
-
+import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -17,91 +7,33 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.imgproc.Moments;
-import org.opencv.utils.Converters;
-import org.opencv.imgcodecs.*;
-//import org.opencv.highgui.Highgui;
-
-
-
-import org.opencv.imgcodecs.Imgcodecs;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.util.ArrayList;
-
-import java.util.List;
-
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
-public class ProcessMap {
+public class ImageProcessing {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
-
-		String path = "/Users/elias_debaere/Desktop/ICTM/groundfloor1.jpg"; //path from original picture
-		String dstPathSobel = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		
+		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
 
-		Mat filtImage = applyFilters(path, dstPathSobel, width, height);
+		applyFilters(path, dstPathSobel, width, height);
+
 	}
-
-	public static double[] RGBtoHSV(double r, double g, double b) {
-
-		double h, s, v;
-
-		double min, max, delta;
-
-		min = Math.min(Math.min(r, g), b);
-		max = Math.max(Math.max(r, g), b);
-
-		// V
-		v = max;
-
-		delta = max - min;
-
-		// S
-		if (max != 0)
-			s = delta / max;
-		else {
-			s = 0;
-			h = -1;
-			return new double[] { h, s, v };
-		}
-
-		// H
-		if (r == max)
-			h = (g - b) / delta; // between yellow & magenta
-		else if (g == max)
-			h = 2 + (b - r) / delta; // between cyan & yellow
-		else
-			h = 4 + (r - g) / delta; // between magenta & cyan
-
-		h *= 60; // degrees
-
-		if (h < 0)
-			h += 360;
-
-		return new double[] { h, s, v };
-	}
-
+	
 	public static Mat applyFilters(String path, String dstPath, double width, double height) {
-		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
-		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
 
 		// Mat imgDst = new Mat(image.size());     
 		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
 		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
-
-		
 
 		System.out.println("start Gaussian Threshold");
 
@@ -133,28 +65,7 @@ public class ProcessMap {
 		System.out.println("Written to " + dstPath);
 		return imgDst;
 	}
-
-	public static void applyHSV(String path, String dstPath) {
-		Mat image = Imgcodecs.imread(path);     //niet compatibel
-		//Mat image = Highgui.imread(path);         //compatibel met lejos
-		Mat imgDst = Imgcodecs.imread(path);    //niet compatibel
-		//Mat imgDst = Highgui.imread(path);        //compatibel
-		Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2HSV);
-		System.out.println("Start HSV");
-		Imgproc.GaussianBlur(image, image, new Size(3, 3), 0, 0, 0);
-		Scalar minValues = new Scalar(0, 0, 0);
-		Scalar maxValues = new Scalar(37, 16, 71);
-		Core.inRange(image, minValues, maxValues, imgDst);
-		// imgDst = applyContours(imgDst, "HSV");
-		System.out.println("HSV done");
-
-		Imgcodecs.imwrite(dstPath, imgDst);     //niet compatibel
-		//Highgui.imwrite(dstPath, imgDst);         //compatibel
-
-		System.out.println("Written to " + dstPath);
-
-	}
-
+	
 	public static Mat applyFlatTransformation(Mat image, double width, double height) {
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
@@ -163,7 +74,7 @@ public class ProcessMap {
 		double maxArea = -1;
 		MatOfPoint temp_contour = new MatOfPoint();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
-		int number = -1;
+		//int number = -1;
 
 		for (int idx = 0; idx < contours.size(); idx++) {
 			temp_contour = contours.get(idx);
@@ -178,7 +89,7 @@ public class ProcessMap {
 				Imgproc.approxPolyDP(new_mat, approxCurve_temp, 0.02 * peri, true);
 				maxArea = contourarea;
 				approxCurve = approxCurve_temp;
-				number = idx;
+				//number = idx;
 				// System.out.println(approxCurve_temp.total()); //count of
 				// corners
 
@@ -214,37 +125,10 @@ public class ProcessMap {
 		return imgDst;
 	}
 
-	public static ArrayList<Point> sortPoints(ArrayList<Point> source) {
-		double averageY = 0;
-		ArrayList<Point> upperPoints = new ArrayList<Point>();
-		ArrayList<Point> lowerPoints = new ArrayList<Point>();
-		ArrayList<Point> Points = new ArrayList<Point>();
-		for (int i = 0; i < source.size(); i++) {
-			averageY += source.get(i).y;
-		}
-		averageY = averageY / source.size();
-		for (int i = 0; i < source.size(); i++) {
-			if (source.get(i).y < averageY) {
-				lowerPoints.add(source.get(i));
-			} else
-				upperPoints.add(source.get(i));
-		}
-		if (upperPoints.get(0).x < upperPoints.get(1).x) {
-			Points.add(upperPoints.get(0));
-			Points.add(upperPoints.get(1));
-		} else {
-			Points.add(upperPoints.get(1));
-			Points.add(upperPoints.get(0));
-		}
-		if (lowerPoints.get(0).x > lowerPoints.get(1).x) {
-			Points.add(lowerPoints.get(0));
-			Points.add(lowerPoints.get(1));
-		} else {
-			Points.add(lowerPoints.get(1));
-			Points.add(lowerPoints.get(0));
-		}
-		return Points;
-
+	public static Mat adaptiveThreshold(Mat image) {
+		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
+				16);
+		return image;
 	}
 
 	public static Mat fourPointTransformation(Mat image, ArrayList<Point> original, double widthImg, double lengthImg) {
@@ -301,39 +185,5 @@ public class ProcessMap {
 
 		return imgDst;
 	};
-
 	
-	public static Mat adaptiveThreshold(Mat image) {
-		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
-				16);
-		return image;
-	}
-
-	public static Mat erodeDilate(Mat image, int erosionSize, int dilateSize) {
-		Mat elementErode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
-				new Size(2 * erosionSize + 1, 2 * erosionSize + 1));
-		Mat elementDilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
-				new Size(2 * dilateSize + 1, 2 * dilateSize + 1));
-		Imgproc.erode(image, image, elementErode);
-		Imgproc.dilate(image, image, elementDilate);
-		return image;
-	}
-
-	public static BufferedImage matToBufferedImage(Mat original) {
-		BufferedImage image = null;
-		int width = original.width(), height = original.height(), channels = original.channels();
-		byte[] sourcePixels = new byte[width * height * channels];
-		original.get(0, 0, sourcePixels);
-
-		if (original.channels() > 1) {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-		} else {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-		}
-		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		System.arraycopy(sourcePixels, 0, targetPixels, 0, sourcePixels.length);
-
-		return image;
-	}
-
 }

@@ -9,7 +9,7 @@ public class Orientation {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		//inlezen + output path
-		String path = "/Users/elias_debaere/Desktop/ICTM/linksomhoog.jpg";
+		String path = "/Users/elias_debaere/Desktop/ICTM/linksbeneden.jpg";
 		//String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
 		
 		Mat image = Imgcodecs.imread(path);
@@ -27,7 +27,7 @@ public class Orientation {
 		Mat circles1 = new Mat();
 		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
 		Imgproc.HoughCircles(imgHSV_blue, circles1,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		System.out.println("BLAUW #rows " + circles1.rows() + " #cols " + circles1.cols());
+		System.out.println("\nBlauwe cirkel gevonden:  " + (circles1.rows()==1));
 		double bx = circles1.get(0, 0)[0];
 		double by = circles1.get(0, 0)[1];
 		
@@ -41,7 +41,7 @@ public class Orientation {
 		Mat circles2 = new Mat();
 		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
 		Imgproc.HoughCircles(imgHSV_green, circles2,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		System.out.println("GROEN #rows " + circles2.rows() + " #cols " + circles2.cols());
+		System.out.println("Groene cirkel gevonden:  " + (circles2.rows()==1));
 		double gx = circles2.get(0, 0)[0];
 		double gy = circles2.get(0, 0)[1];
 		
@@ -67,8 +67,10 @@ public class Orientation {
 			
 		}
 		
+		System.out.println("Coordiniaten Blauwe en Groene cirkel: ");
 		System.out.println("gx: "+gx+"  gy: "+gy);
 		System.out.println("bx: "+bx+"  by: "+by);
+		System.out.println("\nPositie ROBOT:");
 		System.out.println("hoek: " + hoek/Math.PI*180);
 		
 		double lengte = 300; //afstand tussen blauw en groen = KALIBREREN
@@ -80,5 +82,7 @@ public class Orientation {
 		
 		
 	}
+	
+	public static 
 
 }
