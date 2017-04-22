@@ -58,8 +58,17 @@ import com.sun.glass.ui.Robot;
 
 
 public class PathPlanning2 {
+	
+	static ArrayList<Point> waypoints;
+	
+	public static void main(String[] args) {
+		try {
+			volgPad();
+		}
+		catch (DestinationUnreachableException  e) {};
+	}
 
-	public static void main(String[] args) throws DestinationUnreachableException {
+	public static void volgPad() throws DestinationUnreachableException {
 		float gridSpace = 0.1f;
 		float clearance = 0.1f;   // dit moet de afstand van centrum van robot tot verste uiteinde ervan zijn (straal omgeschreven cirkel zogezegd)
 		
@@ -70,7 +79,7 @@ public class PathPlanning2 {
 		FourWayGridMesh gridMesh = new FourWayGridMesh(map, gridSpace, clearance);
 		NodePathFinder padvinder = new NodePathFinder(new AstarSearchAlgorithm(), gridMesh);
 		Path pad = padvinder.findRoute(new Pose(1.7f, 1.1f, 45), new Waypoint(new Point(2f,8f)));
-		ArrayList<Point> waypoints = new ArrayList<Point>();
+		waypoints = new ArrayList<Point>();
 		for (Waypoint waypoint : pad) {
 			waypoints.add(new Point(waypoint.x, waypoint.y));
 		}
@@ -113,6 +122,12 @@ public class PathPlanning2 {
 		return map;
 		
 	}
+	
+	public ArrayList<Point> getWaypoints() {
+		return this.waypoints;
+	}
+	
+
 	
 
 }
