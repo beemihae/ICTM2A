@@ -1,3 +1,4 @@
+
 import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -5,6 +6,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+
+import org.opencv.core.*;
+
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -20,6 +25,14 @@ import org.opencv.utils.Converters;
 import org.opencv.imgcodecs.*;
 //import org.opencv.highgui.Highgui;
 
+
+
+import org.opencv.imgcodecs.Imgcodecs;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
+
 import java.util.List;
 
 import org.opencv.core.Size;
@@ -28,11 +41,15 @@ public class ProcessMap {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
-		String dstPathSobel = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Ground_floor1.jpg"; //path you want to write, you can choose a non-existing .jpg
+
+
+		String path = "/Users/elias_debaere/Desktop/ICTM/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+
 		double width = 1.34; // width of biggest square, needed to calibrate the
 								// screen
 		double height = 1.96;
+
 		Mat filtImage = applyFilters(path, dstPathSobel, width, height);
 	}
 
@@ -79,9 +96,13 @@ public class ProcessMap {
 		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
 		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
+
 		// Mat imgDst = new Mat(image.size());     
 		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
 		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
+
+		
+
 		System.out.println("start Gaussian Threshold");
 
 		// imgDst = erodeDilate(image, 3, 3);
@@ -254,18 +275,29 @@ public class ProcessMap {
 		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+
 		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
 		String dstPathOriginal = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 		Mat map = Imgcodecs.imread(path);    //niet compatibel
 		//Mat map = Highgui.imread(path);        //compatibel
+
+		//String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
+		//String dstPathOriginal = "/Users/beemihae/Desktop/original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		//Mat map = Imgcodecs.imread(path);
+
 		
-		Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
+		//Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
 		
 		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
+
 		Imgproc.resize(map, map, map.size()); // stretch the picture
 		Imgcodecs.imwrite(dstPathOriginal, map);    //niet compatibel
 		//Highgui.imwrite(dstPathOriginal, map);          //compatibel
+
+		//Imgproc.resize(map, map, map.size()); // stretch the picture
+		//Imgcodecs.imwrite(dstPathOriginal, map);
+
 
 		return imgDst;
 	};
@@ -287,7 +319,7 @@ public class ProcessMap {
 		return image;
 	}
 
-	private static BufferedImage matToBufferedImage(Mat original) {
+	public static BufferedImage matToBufferedImage(Mat original) {
 		BufferedImage image = null;
 		int width = original.width(), height = original.height(), channels = original.channels();
 		byte[] sourcePixels = new byte[width * height * channels];
