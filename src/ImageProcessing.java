@@ -19,9 +19,9 @@ public class ImageProcessing {
 
 		Mat image = applyFilters(path, dstPathSobel, width, height);
 		
-		Mat imgDst1 = applyFlatTransformation(image, width, height);
+		ArrayList<Point> source = applyFlatTransformation(image, width, height);
 		System.out.println("Gaussian Threshold Done");
-		Imgcodecs.imwrite(dstPathSobel, imgDst1); 
+		Imgcodecs.imwrite(dstPathSobel, image); 
 		System.out.println("Written to " + dstPathSobel);
 		Mat imgDst = fourPointTransformation(image, source, width, height);
 
@@ -54,7 +54,7 @@ public class ImageProcessing {
 		return image;
 	}
 	
-	public static Mat applyFlatTransformation(Mat image, double width, double height) {
+	public static ArrayList<Point> applyFlatTransformation(Mat image, double width, double height) {
 		System.out.println("Start Transformation");
 
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
@@ -110,7 +110,8 @@ public class ImageProcessing {
 		source.add(p3);
 		source.add(p4); // (0,UL),(1, DL),(2,DR),(3,UR)
 
-		return imgDst;
+		return source;
+		
 	}
 
 
