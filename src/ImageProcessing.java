@@ -17,11 +17,10 @@ public class ImageProcessing {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		String path = "/Users/elias_debaere/Desktop/groundfloor1.jpg"; //path from original picture
-		String dstPathSobel = "/Users/elias_debaere/Desktop/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		String path = "/Users/elias_debaere/Desktop/ICTM/groundfloor1.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 
-		double width = 1.34; // width of biggest square, needed to calibrate the
-								// screen
+		double width = 1.34; // width of biggest square, needed to calibrate the screen
 		double height = 1.96;
 
 		applyFilters(path, dstPathSobel, width, height);
