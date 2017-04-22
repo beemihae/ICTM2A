@@ -71,7 +71,7 @@ public class Pathplanning {
    // ...               ...               ...               ...
 	
 	class GridMesh extends FourWayGridMesh{						// nieuwe constructor die punten van obstakels weglaat
-		public GridMesh(LineMap map, float gridSpace, float clearance, Point[][] arr)  {
+		public GridMesh(LineMap map, float gridSpace, float clearance, ArrayList arr)  {
 				super(map,gridSpace,clearance);
 			String foutboodschap = new String("Punt niet gevonden.");
 		   for(int j=0;j<arr.length;j++){
@@ -191,23 +191,23 @@ public class Pathplanning {
  int dimy = 2048;					// y dimensie van de foto
  float heading = 45;					// hoek met de x as van de startrichting van de robot
 
-ArrayList<Point[]> stuff = new ArrayList<Point>();
-	    Point  arr[] = new Point[1];
+ArrayList<Point[]> arr = new ArrayList<Point>();
+	    Point  arr1[] = new Point[1];
 	   arr[0]=new Point(10 , 10); 
 	   stuff.add(arr);
-	   Point  arr1[] = new Point[4];
+	   Point  arr2[] = new Point[4];
 	   arr[0]=new Point(5 , 95);
 	   arr[1]=new Point(95 , 95);
 	   arr[2]=new Point(95 , 95);
 	   arr[3]=new Point(95 , 95);
 	   stuff.add(arr);
-	   Point  arr2[] = new Point[1];
+	   Point  arr3[] = new Point[1];
 	   arr[0]=new Point(10 , 10);
 	   arr[1]=new Point(95 , 95);
 	   arr[2]=new Point(95 , 95);
 	   arr[3]=new Point(95 , 95);
 	   stuff.add(arr);
-	   Point  arr3[] = new Point[1];
+	   Point  arr4[] = new Point[1];
 	   arr[0]=new Point(10 , 10); 
 	   stuff.add(arr);
  Point  arr[][] = new Point[4][6];				// input die normaal van elias komt
