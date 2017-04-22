@@ -122,6 +122,64 @@ public class ImageProcessing {
 		return imgDst;
 	}
 
+	public static ArrayList<Point> FindOuterContour(Mat image) {
+		
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+
+		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+
+		double maxArea = -1;
+		MatOfPoint temp_contour = new MatOfPoint();
+		MatOfPoint2f approxCurve = new MatOfPoint2f();
+		//int number = -1;
+
+		for (int idx = 0; idx < contours.size(); idx++) {
+			temp_contour = contours.get(idx);
+			double contourarea = Imgproc.contourArea(temp_contour);
+			// compare this contour to the previous largest contour found
+			if (contourarea > maxArea) {
+				// check if this contour is a square
+				MatOfPoint2f new_mat = new MatOfPoint2f(temp_contour.toArray());
+				MatOfPoint2f curve = new MatOfPoint2f(contours.get(idx).toArray());
+				double peri = Imgproc.arcLength(curve, true);
+				MatOfPoint2f approxCurve_temp = new MatOfPoint2f();
+				Imgproc.approxPolyDP(new_mat, approxCurve_temp, 0.02 * peri, true);
+				maxArea = contourarea;
+				approxCurve = approxCurve_temp;
+				//number = idx;
+				// System.out.println(approxCurve_temp.total()); //count of
+				// corners
+
+			}
+		}
+		// Imgproc.drawContours(image ,contours, number ,new Scalar(100, 100,
+		// 100), 10); //uncomment to see the maximum contour
+
+		double[] temp_double;
+		temp_double = approxCurve.get(0, 0);
+		Point p1 = new Point(temp_double[0], temp_double[1]);
+		// Imgproc.circle(image, p1, 55, new Scalar(0, 0, 255)); //uncomment to
+		// see the 4 corners.
+		// Imgproc.warpAffine(sourceImage, dummy, rotImage,sourceImage.size());
+		temp_double = approxCurve.get(1, 0);
+		Point p2 = new Point(temp_double[0], temp_double[1]);
+		// Imgproc.circle(image, p2, 150, new Scalar(255, 255, 255));
+		temp_double = approxCurve.get(2, 0);
+		Point p3 = new Point(temp_double[0], temp_double[1]);
+		// Imgproc.circle(image, p3, 200, new Scalar(255, 0, 0));
+		temp_double = approxCurve.get(3, 0);
+		Point p4 = new Point(temp_double[0], temp_double[1]);
+		// Imgproc.circle(image, p4, 100, new Scalar(0, 0, 255));
+		ArrayList<Point> source2 = new ArrayList<Point>();
+
+		source2.add(p1);
+		source2.add(p2);
+		source2.add(p3);
+		source2.add(p4); // (0,UL),(1, DL),(2,DR),(3,UR)
+
+		return source2;
+	}
+	
 	public static Mat adaptiveThreshold(Mat image) {
 		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
 				16);
