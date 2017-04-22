@@ -24,6 +24,7 @@ public class ImageProcessing {
 		double height = 1.96;
 
 		applyFilters(path, dstPathSobel, width, height);
+		float [] RobotOrientatian = 
 
 	}
 	
@@ -144,6 +145,7 @@ public class ImageProcessing {
 		destination.get(2).y = destination.get(1).y;
 		double originalWidth = destination.get(2).x - destination.get(1).x;
 		double originalHeight = destination.get(1).y - destination.get(0).y;
+		System.out.println("original Width + original Height");
 		System.out.println(originalWidth+" "+originalHeight);
 		double originalRatio = originalHeight/originalWidth;
 		double transformRatio = ratioNeeded/originalRatio;
@@ -159,27 +161,8 @@ public class ImageProcessing {
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 
-		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
-		String dstPathOriginal = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
-		Mat map = Imgcodecs.imread(path);    //niet compatibel
-		//Mat map = Highgui.imread(path);        //compatibel
-
-		//String path = "/Users/beemihae/Desktop/groundfloor1.jpg"; //path from original picture
-		//String dstPathOriginal = "/Users/beemihae/Desktop/original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
-		//Mat map = Imgcodecs.imread(path);
-
-		
-		//Imgproc.warpPerspective(map, map, transformation, map.size(), Imgproc.INTER_CUBIC);
-		
 		
 		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
-
-		Imgproc.resize(map, map, map.size()); // stretch the picture
-		Imgcodecs.imwrite(dstPathOriginal, map);    //niet compatibel
-		//Highgui.imwrite(dstPathOriginal, map);          //compatibel
-
-		//Imgproc.resize(map, map, map.size()); // stretch the picture
-		//Imgcodecs.imwrite(dstPathOriginal, map);
 
 
 		return imgDst;
