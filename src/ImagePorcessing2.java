@@ -6,7 +6,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.utils.Converters;
 
-public class ImageProcessing {
+public class ImagePorcessing2 {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -19,6 +19,16 @@ public class ImageProcessing {
 
 		Mat image = applyFilters(path, dstPathSobel, width, height);
 		
+		ArrayList<Point> source = applyFlatTransformation(image, width, height);
+		System.out.println("Gaussian Threshold Done");
+		Imgcodecs.imwrite(dstPathSobel, image); 
+		System.out.println("Written to " + dstPathSobel);
+		Mat imgDst = fourPointTransformation(image, source, width, height);
+
+		System.out.println("Transformation Done");
+		
+		
+		
 		//float [] RobotLocation = GetRobotLocation(path);
 		List<Point[]> rectangle_approx = DetectObjects(dstPathSobel);
 		
@@ -27,43 +37,26 @@ public class ImageProcessing {
 	
 	public static Mat applyFilters(String path, String dstPath, double width, double height) {
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
-
-		// Mat imgDst = new Mat(image.size());     
-		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
-		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
-
+		Mat imgDst = Imgcodecs.imread(path);
+		
 		System.out.println("start Gaussian Threshold");
-
-		// imgDst = erodeDilate(image, 3, 3);
-		// Imgproc.equalizeHist(image, image);
-
 		Imgproc.GaussianBlur(image, imgDst, new Size(23, 23), 0, 0, 0);
-
-		// imgDst = erodeDilate(image,3,3);
-
-		// Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 1, 0);
-		// Imgproc.Sobel(imgDst, imgDst, CvType.CV_8UC1, 0, 1); //Apply Sobel in
-		// X&Y direction
-
 		Imgproc.cvtColor(imgDst, imgDst, Imgproc.COLOR_BGR2GRAY);
 		imgDst = adaptiveThreshold(imgDst);
-		// Imgproc.Canny(imgDst, imgDst, 10, 100); //uncomment to see only the
-		// contour lines
-		System.out.println("Start Transformation");
-
-		Mat imgDst1 = applyFlatTransformation(imgDst, width, height);
-
-		System.out.println("Transformation Done");
-		System.out.println("Gaussian Threshold Done");
-
-		Imgcodecs.imwrite(dstPath, imgDst1);      //enkel compatibel met nieuwere versie van openCV dan in lejos
-		//Highgui.imwrite(dstPath, imgDst1);          //compatibel met openCV versie van lejos
-
-		System.out.println("Written to " + dstPath);
+		
 		return imgDst;
+		
 	}
 	
-	public static Mat applyFlatTransformation(Mat image, double width, double height) {
+	public static Mat adaptiveThreshold(Mat image) {
+		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
+				16);
+		return image;
+	}
+	
+	public static ArrayList<Point> applyFlatTransformation(Mat image, double width, double height) {
+		System.out.println("Start Transformation");
+
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
 		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -117,16 +110,10 @@ public class ImageProcessing {
 		source.add(p3);
 		source.add(p4); // (0,UL),(1, DL),(2,DR),(3,UR)
 
-		Mat imgDst = fourPointTransformation(image, source, width, height);
-
-		return imgDst;
+		return source;
+		
 	}
 
-	public static Mat adaptiveThreshold(Mat image) {
-		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
-				16);
-		return image;
-	}
 
 	public static Mat fourPointTransformation(Mat image, ArrayList<Point> original, double widthImg, double lengthImg) {
 		ArrayList<Point> destination = new ArrayList<Point>();
