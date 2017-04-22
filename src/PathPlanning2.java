@@ -66,19 +66,17 @@ public class PathPlanning2 {
 		float[][] boundingPoints = new float[][]{{1.1f,0.5f},{10.5f,0.5f},{10.5f,11.5f},{1.1f,11.5f}};
 		ArrayList<float[][]> contouren = new ArrayList<float[][]>();
 		contouren.add(new float[][]{{3.5f, 4f},{6f, 4.5f},{5f, 6.5f},{2f,5f}});
-		
-		
 		LineMap map = generateMap(boundingPoints, contouren);
 		FourWayGridMesh gridMesh = new FourWayGridMesh(map, gridSpace, clearance);
 		NodePathFinder padvinder = new NodePathFinder(new AstarSearchAlgorithm(), gridMesh);
 		Path pad = padvinder.findRoute(new Pose(1.7f, 1.1f, 45), new Waypoint(new Point(2f,8f)));
-		ArrayList<double[]> waypoints = new ArrayList<double[]>();
+		ArrayList<Point> waypoints = new ArrayList<Point>();
 		for (Waypoint waypoint : pad) {
-			waypoints.add(new double[]{waypoint.x,waypoint.y});
+			waypoints.add(new Point(waypoint.x, waypoint.y));
 		}
 		for (int i = 0; i<waypoints.size(); i++) {
-			System.out.println("x"+i+" = "+waypoints.get(i)[0]);
-			System.out.println("y"+i+" = "+waypoints.get(i)[1]+"\n");
+			System.out.println("x"+i+" = "+waypoints.get(i).x);
+			System.out.println("y"+i+" = "+waypoints.get(i).y+"\n");
 		}
 		PoseProvider ppv = new OdometryPoseProvider(Pilot.pilot);
 		Navigator kapitein = new Navigator(Pilot.pilot, ppv);
