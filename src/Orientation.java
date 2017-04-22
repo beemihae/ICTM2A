@@ -1,4 +1,3 @@
-import java.util.Vector;
 
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -10,8 +9,8 @@ public class Orientation {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		//inlezen + output path
-		String path = "/Users/elias_debaere/Desktop/ICTM/rechtsbeneden.jpg";
-		String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
+		String path = "/Users/elias_debaere/Desktop/ICTM/linksomhoog.jpg";
+		//String dstPath = "/Users/elias_debaere/Desktop/ICTM/test.jpg";
 		
 		Mat image = Imgcodecs.imread(path);
 		Mat imgHSV = Imgcodecs.imread(path);

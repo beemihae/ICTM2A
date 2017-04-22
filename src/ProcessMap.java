@@ -11,7 +11,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+<<<<<<< Updated upstream
 >>>>>>> origin/master
+=======
+import org.opencv.core.*;
+
+>>>>>>> Stashed changes
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -116,7 +121,6 @@ public class ProcessMap {
 	}
 
 	public static Mat applyFilters(String path, String dstPath, double width, double height) {
-<<<<<<< Updated upstream:src/ProcessMap.java
 		//Mat image = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
 		/// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
@@ -128,7 +132,7 @@ public class ProcessMap {
 		// Mat imgDst = new Mat(image.size());     
 		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
 		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
-=======
+
 		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);
 		// Mat image = Imgcodecs.imread(path, 0); //use for Sobel
 <<<<<<< Updated upstream
@@ -136,7 +140,7 @@ public class ProcessMap {
 >>>>>>> origin/master
 >>>>>>> Stashed changes
 		Mat imgDst = Imgcodecs.imread(path);
->>>>>>> Stashed changes:src/ProcesMap.java
+
 		System.out.println("start Gaussian Threshold");
 
 		// imgDst = erodeDilate(image, 3, 3);
