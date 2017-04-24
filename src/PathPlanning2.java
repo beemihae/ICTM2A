@@ -54,6 +54,8 @@ import java.util.Iterator;
 import java.util.List.*;
 import java.util.function.Consumer;
 
+import org.opencv.core.Point;
+
 import com.sun.glass.ui.Robot;
 
 
