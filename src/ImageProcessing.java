@@ -1,6 +1,14 @@
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -30,14 +38,18 @@ public class ImageProcessing {
 																			// non-existing
 																			// .jpg
 
-		double width = 1.34; // width of biggest square, needed to calibrate the
-								// screen
-		double height = 1.96;
-
-		Mat image = applyFilters(path, dstPathSobel, width, height);
-
-		float[] RobotLocation = GetRobotLocation(path);
-		List<Point[]> rectangle_approx = DetectObjects(dstPathSobel, RobotLocation);
+		/*
+		 * double width = 1.34; // width of biggest square, needed to calibrate
+		 * the // screen double height = 1.96;
+		 * 
+		 * Mat image = applyFilters(path, dstPathSobel, width, height);
+		 * 
+		 * float[] RobotLocation = GetRobotLocation(path); List<Point[]>
+		 * rectangle_approx = DetectObjects(dstPathSobel, RobotLocation);
+		 */
+		BufferedImage image = getPictureIP("http://192.168.43.1:8080/shot.jpg");
+		Mat File = bufferedImageToMat(image);
+		Imgcodecs.imwrite("/Users/beemihae/Downloads/emma1.jpg", File);
 
 	}
 
@@ -513,11 +525,29 @@ public class ImageProcessing {
 
 			}
 		}
-		
+
 		Imgcodecs.imwrite(path, image_orig);
 		System.out.println("Ended Object Detection");
 		return rectangle_approx;
 
+	}
+
+	public static Mat bufferedImageToMat(BufferedImage bi) {
+		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+		mat.put(0, 0, data);
+		return mat;
+	}
+	
+	public static BufferedImage getPictureIP(String urlPath){
+		Image image = null;
+        try {
+            URL url = new URL(urlPath);
+            image = ImageIO.read(url);
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+		return (BufferedImage) image;
 	}
 
 }
