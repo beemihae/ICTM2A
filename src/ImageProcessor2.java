@@ -26,7 +26,10 @@ public class ImageProcessor2 {
 	private double height = 1.960;
 	private float[] robotLocation; // float[angle, x, y]
 	private ArrayList<Point> source; // nodig voor FourPointTransformation
-
+	
+	public ArrayList<float[][]> contours;
+	private double pixelWidth;
+	private double pixelLength;
 	public ImageProcessor2() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		originalPicture = Imgcodecs.imread(pathOriginal);
@@ -34,13 +37,15 @@ public class ImageProcessor2 {
 		applyFilters(width, height);
 
 		robotLocation = GetRobotLocation();
-		ArrayList<float[][]> res = getContours();
+		contours = getContours();
 
 	}
 
 	public ArrayList<float[][]> getContours() {
 		ArrayList<float[][]> res = new ArrayList<float[][]>();
 		List<Point[]> rectangle_approx = DetectObjects(pathFilteredGray, robotLocation);
+		System.out.println(rectangle_approx.toString());
+		
 		try {
 			Formatter f = new Formatter("/Users/beemihae/Desktop/ICTM/Lines.txt");
 			for (int i = 0; i < rectangle_approx.size(); i++) {
@@ -49,41 +54,37 @@ public class ImageProcessor2 {
 					contour[j][0] = (float) rectangle_approx.get(i)[j].x;
 					contour[j][1] = (float) rectangle_approx.get(i)[j].y;
 					if(j == rectangle_approx.get(i).length-1){
-						f.format("%s %s %s %s", "" + (int) rectangle_approx.get(i)[j].x, "" + (int) rectangle_approx.get(i)[j].y , "" + (int) rectangle_approx.get(i)[0].x, "" + (int) rectangle_approx.get(i)[0].y +"\n");
-					} else{
-						f.format("%s %s %s %s", ""+ (int) rectangle_approx.get(i)[j].x, "" + (int) rectangle_approx.get(i)[j].y , "" + (int) rectangle_approx.get(i)[j+1].x, "" + (int) rectangle_approx.get(i)[j+1].y +"\n");
-						
+					//if (j == 3) {
+						f.format("%s %s %s %s", "" + (int) rectangle_approx.get(i)[j].x,
+								"" + (int) rectangle_approx.get(i)[j].y, "" + (int) rectangle_approx.get(i)[0].x,
+								"" + (int) rectangle_approx.get(i)[0].y + "\n");
+						System.out.println(
+								"[" + rectangle_approx.get(i)[j].x + "," + rectangle_approx.get(i)[j].y + "]\t" + "["
+										+ rectangle_approx.get(i)[0].x + "," + rectangle_approx.get(i)[0].y + "]");
+
+					} else {
+						f.format("%s %s %s %s", "" + (int) rectangle_approx.get(i)[j].x,
+								"" + (int) rectangle_approx.get(i)[j].y, "" + (int) rectangle_approx.get(i)[j + 1].x,
+								"" + (int) rectangle_approx.get(i)[j + 1].y + "\n");
+						System.out.println("[" + rectangle_approx.get(i)[j].x + "," + rectangle_approx.get(i)[j].y
+								+ "]\t" + "[" + rectangle_approx.get(i)[j + 1].x + ","
+								+ rectangle_approx.get(i)[j + 1].y + "]");
+
 					}
-					System.out.println("[" + rectangle_approx.get(i)[j].x + "," + rectangle_approx.get(i)[j].y + "]\n");
-					
+
 				}
 				res.add(contour);
 			}
 
-			f.close(); 
-			
+			f.close();
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		try {
-			  File x = new File("/Users/beemihae/Desktop/ICTM/Lines.txt");
-			  Scanner sc = new Scanner(x);
-			  while(sc.hasNext()) {
-				  	
-				  	
-				    System.out.println(sc.nextInt());
-				  }
-				  sc.close();
-			}
-			 catch (FileNotFoundException e) {
-				 System.out.println("File not found");
-			}
+
 		return res;
 	}
-
-	
 
 	public float getWidth() {
 		return (float) originalPicture.size().width;
