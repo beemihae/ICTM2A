@@ -258,6 +258,7 @@ public class ImageProcessing {
 
 		return imgDst;
 	};
+	
 
 	public static float [] GetRobotLocation(String path){
 		
@@ -336,7 +337,7 @@ public class ImageProcessing {
 	}
 
 	public static List<Point[]> DetectObjects(String path,float[] RobotLocation){
-		System.out.println("Start Object Detection");
+  		System.out.println("Start Object Detection");
 		
 		//inlezen
 		Mat image_orig = Imgcodecs.imread(path);
@@ -356,7 +357,7 @@ public class ImageProcessing {
 		Imgproc.circle(image_orig, corners_world.get(3), 3, new Scalar(0,0,255),10);
 		
 		double worldArea = FindMaxContourArea(image);
-		double maxArea = worldArea*0.20; //grootst mogelijk object is 40% totale wereld
+		double maxArea = worldArea*0.20; //grootst mogelijk object is 20% totale wereld
 		double minArea = worldArea*0.002; //kleinst mogelijk object is 0.2% totale wereld
 		
 		//initialiseren
@@ -371,19 +372,23 @@ public class ImageProcessing {
 				new Point(0,corners_world.get(0).y)};
 		rectangle_approx.add(boven);
 		
+		
 		Point[] onder = {new Point(0,corners_world.get(2).y), new Point(foto_hoekpunt3.x,corners_world.get(3).y),
 				foto_hoekpunt3,foto_hoekpunt4};
 		rectangle_approx.add(onder);
+	
 		
 		Point[] links = {foto_hoekpunt1,new Point(corners_world.get(1).x,0),
 				new Point(corners_world.get(1).x,foto_hoekpunt3.y),foto_hoekpunt4};
 		rectangle_approx.add(links);
+		
 		
 		Point[] rechts = {new Point(corners_world.get(0).x,0),foto_hoekpunt2,foto_hoekpunt3,
 				new Point(corners_world.get(3).x,foto_hoekpunt3.y)};
 		rectangle_approx.add(rechts);
 		
 		
+		//teken verboden zone
 		for(int test=0;test<4;test++){	
 			for(int j =0;j<4;j++){
 				if(j<3){Imgproc.line(image_orig,rectangle_approx.get(test)[j],rectangle_approx.get(test)[j+1], new Scalar(0,0,255),10);}
@@ -394,14 +399,16 @@ public class ImageProcessing {
 		
 		Point[] corners= new Point[4];
 		int counter = 4;
+		
 		//KALIBREER afmetingen robot
 		RotatedRect robot = new RotatedRect(new Point(RobotLocation[1], RobotLocation[2]),new Size(288,340), RobotLocation[0]);
-		
 		robot.points(corners);
+		//teken robot in blauw
 		for(int j =0;j<4;j++){
 			if(j<3){Imgproc.line(image_orig,corners[j],corners[j+1], new Scalar(255,0,0),10);}
 			else{Imgproc.line(image_orig,corners[j],corners[0], new Scalar(255,0,0),10);}
 		}
+		
 		
 		for (int i=0;i<contours.size();i++){
 			//bepaal benadering vorm van i-de contour
@@ -412,39 +419,45 @@ public class ImageProcessing {
 			Imgproc.approxPolyDP(contouri, obstaclei_approx, 0.02*peri, true);
 			
 			//bepaal vierhoek rond contour i
-			RotatedRect rect = Imgproc.minAreaRect(obstaclei_approx); //rechthoek over eerste contour
-			/*System.out.println("world area "+(int) worldArea);
-			System.out.println("maxarea "+(int) maxArea);
-			System.out.println("minarea "+(int) minArea);*/
+			RotatedRect rect = Imgproc.minAreaRect(obstaclei_approx); //rechthoek over ide contour
 			
+			Point[] corners2= new Point[4];
 			
-			//voeg toe indien niet te groot of te klein object 
-			if (rect.size.area()<maxArea && rect.size.area()>minArea && (Math.hypot(robot.center.x-rect.center.x, robot.center.y-rect.center.y)>robot.size.height)){
+			//voeg toe indien niet te groot of te klein object en geen overlap met robot
+			if (rect.size.area()<maxArea && rect.size.area()>minArea &&
+					(Math.hypot(robot.center.x-rect.center.x, robot.center.y-rect.center.y)>robot.size.height)){
 				//bepaal hoekpunten van vierhoek i
 				//teken de hoekpunten van vierhoek counter
-				rect.points(corners);
-				rectangle_approx.add(corners);
-				Imgproc.circle(image_orig, rectangle_approx.get(counter)[0], 3, new Scalar(0,255,0),10);
-				Imgproc.circle(image_orig, rectangle_approx.get(counter)[1], 3, new Scalar(0,255,0),10);
-				Imgproc.circle(image_orig, rectangle_approx.get(counter)[2], 3, new Scalar(0,255,0),10);
-				Imgproc.circle(image_orig, rectangle_approx.get(counter)[3], 3, new Scalar(0,255,0),10);
-
+				
+				rect.points(corners2);
+				rectangle_approx.add(corners2);
+				
 				//neem marge rond object: KALIBREER
 				rect = new RotatedRect(rect.center,new Size(rect.size.width*1.2,rect.size.height*1.2),rect.angle);
-				rect.points(corners);
-				rectangle_approx.set(counter, corners);
+				rect.points(corners2);
+				rectangle_approx.set(counter, corners2);
 				
-				//System.out.println("rechthoek "+i+" area: "+(int) rect.size.area());
-				
-				//teken rechthoek counter
-				for(int j =0;j<4;j++){
-					if(j<3){Imgproc.line(image_orig,rectangle_approx.get(counter)[j],rectangle_approx.get(counter)[j+1], new Scalar(0,0,255),2);}
-					else{Imgproc.line(image_orig,rectangle_approx.get(counter)[j],rectangle_approx.get(counter)[0], new Scalar(0,0,255),2);}
-				}
 				
 				counter++;
 			}
 			
+		}
+		
+		//teken rechthoeken in rect_approx: hier zit nog een fout. de rechthoeken in de forlus hierboven worden overschreven met de laatst toegevoegde rechthoek??
+		for(int i =4;i<rectangle_approx.size();i++){	
+			//System.out.println("rechthoek "+i);
+			//System.out.println(rectangle_approx.get(i)[0]);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[0], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[1], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[2], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[3], 3, new Scalar(0,255,0),10);
+			for(int j =0;j<4;j++){
+				if(j<3){
+					Imgproc.line(image_orig,rectangle_approx.get(i)[j],rectangle_approx.get(i)[j+1], new Scalar(0,0,255),2);
+				}
+				else{Imgproc.line(image_orig,rectangle_approx.get(i)[j],rectangle_approx.get(i)[0], new Scalar(0,0,255),2);}
+				
+			}
 		}
 		
 		
