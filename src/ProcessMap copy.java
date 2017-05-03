@@ -37,7 +37,7 @@ import java.util.List;
 
 import org.opencv.core.Size;
 
-public class ProcessMap {
+public class ProcessMap copy {
 
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -276,8 +276,8 @@ public class ProcessMap {
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
 
-		String path = "/Users/elias_debaere/Desktop/ICTM/groundfloor1.jpg"; //path from original picture
-		String dstPathOriginal = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+		String path = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\Original_picture.jpg"; //path from original picture
+		String dstPathOriginal = "C:\\Users\\gebruiker\\Documents\\GitHub\\ICTM2A\\src\\original_filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
 		Mat map = Imgcodecs.imread(path);    //niet compatibel
 		//Mat map = Highgui.imread(path);        //compatibel
 

@@ -1,7 +1,14 @@
 
+<<<<<<< HEAD
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+=======
+<<<<<<< HEAD
+import java.util.ArrayList;
+import java.util.List;
+=======
+>>>>>>> origin/master
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
+>>>>>>> origin/master
 
 import javax.imageio.ImageIO;
 
@@ -23,14 +31,94 @@ import com.sun.javafx.geom.Rectangle;
 import javafx.scene.shape.Line;
 
 public class ImageProcessor2 {
+<<<<<<< HEAD
 	public String pathOriginal = "/Users/beemihae/Desktop/ICTM/groundfloor3.jpg";
 	public String pathFilteredGray = "/Users/beemihae/Desktop/ICTM/filtered_gray.jpg";
 	public String pathFilteredColor = "/Users/beemihae/Desktop/ICTM/filtered_color.jpg";
 	public String pathOriginal1 = "/Users/beemihae/Desktop/ICTM/original.jpg";
+=======
+<<<<<<< HEAD
+	public String pathOriginal = ("/Users/elias_debaere/Desktop/ICTM/groundfloor1_robot.jpg");
+	public String pathFilteredGray = ("/Users/elias_debaere/Desktop/ICTM/FilteredGray.jpg");
+	public String pathFilteredColor = ("/Users/elias_debaere/Desktop/ICTM/FilteredColor.jpg");
+=======
+	public String pathOriginal = "/Users/beemihae/Desktop/ICTM/groundfloor1_robot.jpg";
+	public String pathFilteredGray = "/Users/beemihae/Desktop/ICTM/filtered_gray.jpg";
+	public String pathFilteredColor = "/Users/beemihae/Desktop/ICTM/filtered_color.jpg";
+>>>>>>> origin/master
+>>>>>>> origin/master
 	private Mat originalPicture;
 	private Mat originalGray;
 	private Mat filteredGray;
 	private Mat filteredColor;
+<<<<<<< HEAD
+	private double width = 1.340;      //width of biggest square, needed to calibrate the screen
+	private double height = 1.960;
+	private float[] robotLocation;
+	private ArrayList<Point> source;
+	
+	
+	public ImageProcessor2 () {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		originalPicture = Imgcodecs.imread(pathOriginal);
+		filteredGray = applyFilters(pathOriginal, pathFilteredGray, width, height);
+		originalGray = Imgcodecs.imread(pathOriginal,Imgproc.COLOR_BGR2GRAY);
+		
+		filteredColor = fourPointTransformation(originalPicture, source, width, height);
+		Imgcodecs.imwrite(pathFilteredColor,filteredColor);
+		
+		robotLocation = GetRobotLocation();
+		ArrayList<float[][]> res = getContours();
+		
+	}
+	
+	public ArrayList<float[][]> getContours() {
+		ArrayList<float[][]> res = new ArrayList<float[][]>();
+		List<Point[]> rectangle_approx = DetectObjects(pathFilteredGray,robotLocation);
+		for (int i = 0; i < rectangle_approx.size(); i++) {
+			float[][] contour = new float[rectangle_approx.get(i).length][2];
+			for (int j = 0; j < rectangle_approx.get(i).length; j++) {
+				contour[j][0]=(float) rectangle_approx.get(i)[j].x;
+				contour[j][1]=(float) rectangle_approx.get(i)[j].y;				
+			}
+			res.add(contour);
+		}
+		return res;
+	}
+	
+	public float getWidth () {
+		return (float) originalPicture.size().width;
+	}
+	
+	public float getHeight () {
+		return (float) originalPicture.size().height;
+	}
+		
+			
+	/*public static void main(String[] args) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		
+		String path = "/Users/elias_debaere/Desktop/ICTM/groundfloor1_robot.jpg"; //path from original picture
+		String dstPathSobel = "/Users/elias_debaere/Desktop/ICTM/filtered.jpg"; //path you want to write, you can choose a non-existing .jpg
+
+		double width = 1.34; // width of biggest square, needed to calibrate the screen
+		double height = 1.96;
+
+		Mat image = applyFilters(path, dstPathSobel, width, height);
+		
+		float [] RobotLocation = GetRobotLocation(path);
+		List<Point[]> rectangle_approx = DetectObjects(dstPathSobel,RobotLocation);
+		
+		
+	}
+	*/
+	public  Mat applyFilters(String path, String dstPath, double width, double height) {
+		Mat image = Imgcodecs.imread(path, Imgproc.COLOR_RGB2GRAY);  
+
+		// Mat imgDst = new Mat(image.size());     
+		//Mat imgDst = Highgui.imread(path);          // code compatibel met openCV dat in lejos zit
+		Mat imgDst = Imgcodecs.imread(path);      // code enkel compatibel met nieuwere versie dan openCV in lejos
+=======
 	private double width = 1.340; // width of biggest square, needed to
 									// calibrate the screen
 	private double height = 1.960;
@@ -142,13 +230,18 @@ public class ImageProcessor2 {
 		Mat imgDst = Imgcodecs.imread(path); // code enkel compatibel met
 												// nieuwere versie dan openCV in
 												// lejos
+>>>>>>> origin/master
 
 		System.out.println("start Gaussian Threshold");
 
 		// imgDst = erodeDilate(image, 3, 3);
 		// Imgproc.equalizeHist(image, image);
 
+<<<<<<< HEAD
+		Imgproc.GaussianBlur(image, imgDst, new Size(25, 25), 0, 0, 0);
+=======
 		Imgproc.GaussianBlur(image, imgDst, new Size(23, 23), 0, 0, 0);
+>>>>>>> origin/master
 
 		// imgDst = erodeDilate(image,3,3);
 
@@ -167,15 +260,23 @@ public class ImageProcessor2 {
 		System.out.println("Transformation Done");
 		System.out.println("Gaussian Threshold Done");
 
+<<<<<<< HEAD
+		Imgcodecs.imwrite(dstPath, imgDst1);      //enkel compatibel met nieuwere versie van openCV dan in lejos
+		//Highgui.imwrite(dstPath, imgDst1);          //compatibel met openCV versie van lejos
+=======
 		Imgcodecs.imwrite(dstPath, imgDst1); // enkel compatibel met nieuwere
 												// versie van openCV dan in
 												// lejos
 		// Highgui.imwrite(dstPath, imgDst1); //compatibel met openCV versie van
 		// lejos
+>>>>>>> origin/master
 
 		System.out.println("Written to " + dstPath);
 		return imgDst;
 	}
+<<<<<<< HEAD
+	
+=======
 
 	public void applyFilters(double width, double height) {
 		/**
@@ -228,6 +329,7 @@ public class ImageProcessor2 {
 
 	}
 
+>>>>>>> origin/master
 	public Mat applyFlatTransformation(Mat image, double width, double height) {
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
@@ -236,7 +338,11 @@ public class ImageProcessor2 {
 		double maxArea = -1;
 		MatOfPoint temp_contour = new MatOfPoint();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
+<<<<<<< HEAD
+		//int number = -1;
+=======
 		// int number = -1;
+>>>>>>> origin/master
 
 		for (int idx = 0; idx < contours.size(); idx++) {
 			temp_contour = contours.get(idx);
@@ -251,7 +357,11 @@ public class ImageProcessor2 {
 				Imgproc.approxPolyDP(new_mat, approxCurve_temp, 0.02 * peri, true);
 				maxArea = contourarea;
 				approxCurve = approxCurve_temp;
+<<<<<<< HEAD
+				//number = idx;
+=======
 				// number = idx;
+>>>>>>> origin/master
 				// System.out.println(approxCurve_temp.total()); //count of
 				// corners
 
@@ -306,7 +416,11 @@ public class ImageProcessor2 {
 	}
 
 	public static ArrayList<Point> FindOuterContour(Mat image) {
+<<<<<<< HEAD
+		
+=======
 
+>>>>>>> origin/master
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
 		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -314,7 +428,11 @@ public class ImageProcessor2 {
 		double maxArea = -1;
 		MatOfPoint temp_contour = new MatOfPoint();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
+<<<<<<< HEAD
+		//int number = -1;
+=======
 		// int number = -1;
+>>>>>>> origin/master
 
 		for (int idx = 0; idx < contours.size(); idx++) {
 			temp_contour = contours.get(idx);
@@ -329,7 +447,11 @@ public class ImageProcessor2 {
 				Imgproc.approxPolyDP(new_mat, approxCurve_temp, 0.02 * peri, true);
 				maxArea = contourarea;
 				approxCurve = approxCurve_temp;
+<<<<<<< HEAD
+				//number = idx;
+=======
 				// number = idx;
+>>>>>>> origin/master
 				// System.out.println(approxCurve_temp.total()); //count of
 				// corners
 
@@ -362,9 +484,15 @@ public class ImageProcessor2 {
 
 		return source2;
 	}
+<<<<<<< HEAD
+	
+	public static double FindMaxContourArea(Mat image) {
+		
+=======
 
 	public static double FindMaxContourArea(Mat image) {
 
+>>>>>>> origin/master
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 
 		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -372,7 +500,11 @@ public class ImageProcessor2 {
 		double maxArea = -1;
 		MatOfPoint temp_contour = new MatOfPoint();
 		MatOfPoint2f approxCurve = new MatOfPoint2f();
+<<<<<<< HEAD
+		//int number = -1;
+=======
 		// int number = -1;
+>>>>>>> origin/master
 
 		for (int idx = 0; idx < contours.size(); idx++) {
 			temp_contour = contours.get(idx);
@@ -387,7 +519,11 @@ public class ImageProcessor2 {
 				Imgproc.approxPolyDP(new_mat, approxCurve_temp, 0.02 * peri, true);
 				maxArea = contourarea;
 				approxCurve = approxCurve_temp;
+<<<<<<< HEAD
+				//number = idx;
+=======
 				// number = idx;
+>>>>>>> origin/master
 				// System.out.println(approxCurve_temp.total()); //count of
 				// corners
 
@@ -395,7 +531,11 @@ public class ImageProcessor2 {
 		}
 		return maxArea;
 	}
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> origin/master
 	public static Mat adaptiveThreshold(Mat image) {
 		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
 				16);
@@ -417,9 +557,15 @@ public class ImageProcessor2 {
 		double originalWidth = destination.get(2).x - destination.get(1).x;
 		double originalHeight = destination.get(1).y - destination.get(0).y;
 		System.out.println("original Width + original Height");
+<<<<<<< HEAD
+		System.out.println(originalWidth+" "+originalHeight);
+		double originalRatio = originalHeight/originalWidth;
+		double transformRatio = ratioNeeded/originalRatio;
+=======
 		System.out.println(originalWidth + " " + originalHeight);
 		double originalRatio = originalHeight / originalWidth;
 		double transformRatio = ratioNeeded / originalRatio;
+>>>>>>> origin/master
 		// Imgproc.line(image, original.get(1), original.get(0), new Scalar(100,
 		// 100, 100), 20); // see lines of matching points
 		Mat source = Converters.vector_Point2f_to_Mat(original);
@@ -427,6 +573,174 @@ public class ImageProcessor2 {
 		Mat transformation = Imgproc.getPerspectiveTransform(source, dst);
 
 		int lengthDst = (int) image.size().width;
+<<<<<<< HEAD
+		int widthDst = (int) ( image.size().height * transformRatio );
+		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
+		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+		//Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
+
+		
+		Imgproc.resize(image, imgDst, imgDst.size()); // stretch the picture
+
+
+		return imgDst;
+	};
+	
+
+	public  float [] GetRobotLocation(){
+		
+		Mat image = filteredColor.clone();
+		Mat imgHSV = filteredColor.clone();
+		
+		//zet om naar HSV
+		Imgproc.cvtColor(image,imgHSV, Imgproc.COLOR_BGR2HSV);
+		
+		//selecteer blauw
+		Mat imgHSV_blue = imgHSV.clone();
+		Core.inRange(imgHSV_blue, new Scalar(110, 50, 50), new Scalar(130, 255, 255), imgHSV_blue);
+		Imgproc.GaussianBlur(imgHSV_blue, imgHSV_blue, new Size(9,9), 2,2);
+		
+		//detecteer blauwe cirkel
+		Mat circles1 = new Mat();
+		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		Imgproc.HoughCircles(imgHSV_blue, circles1,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		System.out.println("\nBlauwe cirkel gevonden:  " + (circles1.rows()==1));
+		double bx = circles1.get(0, 0)[0];
+		double by = circles1.get(0, 0)[1];
+		
+				
+		//selecteer groen
+		Mat imgHSV_green = imgHSV.clone();
+		Core.inRange(imgHSV_green, new Scalar(50,100,100), new Scalar(70,255,255), imgHSV_green);
+		Imgproc.GaussianBlur(imgHSV_green, imgHSV_green, new Size(9,9), 2,2);
+		
+		//selecteer groene cirkel
+		Mat circles2 = new Mat();
+		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		Imgproc.HoughCircles(imgHSV_green, circles2,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		System.out.println("Groene cirkel gevonden:  " + (circles2.rows()==1));
+		double gx = circles2.get(0, 0)[0];
+		double gy = circles2.get(0, 0)[1];
+		
+		/*//voeg samen
+		Mat imgHSV_circles=imgHSV.clone();
+		Core.addWeighted(imgHSV_green, 1.0, imgHSV_blue, 1.0,0.0,imgHSV_circles);
+		Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/imgHSV_circles.jpg",imgHSV_circles);*/
+		
+		
+		//teken cirkel op origineel
+		Imgproc.circle(image, new Point(bx,by), (int) circles1.get(0, 0)[2], new Scalar(0,0,255),5);
+		Imgproc.circle(image, new Point(gx,gy), (int) circles2.get(0, 0)[2], new Scalar(0,0,255),5);
+		
+		//Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/groundfloor_robot.jpg",image);
+		double hoek = Math.atan((by-gy)/(bx-gx)); //groen aan achterkant, blauw aan voorkant
+		if (bx<gx){ //links
+			if(by<gy){ //omhoog
+				hoek = -(Math.PI-hoek);
+			}
+			else{
+				hoek = (Math.PI+hoek);
+			}
+			
+		}
+		
+		float angle = (float) hoek;
+		
+		System.out.println("Coordiniaten Blauwe en Groene cirkel: ");
+		System.out.println("gx: "+gx+"  gy: "+gy);
+		System.out.println("bx: "+bx+"  by: "+by);
+		System.out.println("\nPositie ROBOT:");
+		System.out.println("hoek: " + hoek/Math.PI*180);
+		
+		float lengte = 187; //afstand tussen blauw en groen = KALIBREREN
+		float x = (float) (gx + Math.cos(hoek)*lengte/2);
+		float y = (float) (gy + Math.sin(hoek)*lengte/2);
+		System.out.println("x: "+x+"  y: "+y);
+		
+		float[] RobotLocation ={angle,x,y}; 
+		
+		return RobotLocation;
+		
+	}
+
+	public static List<Point[]> DetectObjects(String path,float[] RobotLocation){
+  		System.out.println("Start Object Detection");
+		
+		//inlezen
+		Mat image_orig = Imgcodecs.imread(path);
+		Mat image = image_orig.clone(); 
+		Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY);
+		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159, 16); //naar binair
+		
+		//contours selecteren
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Imgproc.findContours(image, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+		
+		//defenieren kleinste en grootste object en hoekpunten wereld
+		ArrayList<Point> corners_world = FindOuterContour(image);
+		Imgproc.circle(image_orig, corners_world.get(0), 3, new Scalar(0,0,255),10);
+		Imgproc.circle(image_orig, corners_world.get(1), 3, new Scalar(0,0,255),10);
+		Imgproc.circle(image_orig, corners_world.get(2), 3, new Scalar(0,0,255),10);
+		Imgproc.circle(image_orig, corners_world.get(3), 3, new Scalar(0,0,255),10);
+		
+		double worldArea = FindMaxContourArea(image);
+		double maxArea = worldArea*0.20; //grootst mogelijk object is 20% totale wereld
+		double minArea = worldArea*0.002; //kleinst mogelijk object is 0.2% totale wereld
+		
+		//initialiseren
+		List<Point[]> rectangle_approx = new ArrayList<Point[]>();
+		//voeg banden van de wereld toe zodat robot hierbinnen blijft
+		Point foto_hoekpunt1 = new Point(0,0);
+		Point foto_hoekpunt4 = new Point(0,image.size().height);
+		Point foto_hoekpunt2 = new Point(image.size().width,0);
+		Point foto_hoekpunt3 = new Point(image.size().width,image.size().height);
+		
+		Point[] boven = {foto_hoekpunt1,foto_hoekpunt2,new Point(foto_hoekpunt2.x,corners_world.get(0).y), 
+				new Point(0,corners_world.get(0).y)};
+		rectangle_approx.add(boven);
+		
+		
+		Point[] onder = {new Point(0,corners_world.get(2).y), new Point(foto_hoekpunt3.x,corners_world.get(3).y),
+				foto_hoekpunt3,foto_hoekpunt4};
+		rectangle_approx.add(onder);
+	
+		
+		Point[] links = {foto_hoekpunt1,new Point(corners_world.get(1).x,0),
+				new Point(corners_world.get(1).x,foto_hoekpunt3.y),foto_hoekpunt4};
+		rectangle_approx.add(links);
+		
+		
+		Point[] rechts = {new Point(corners_world.get(0).x,0),foto_hoekpunt2,foto_hoekpunt3,
+				new Point(corners_world.get(3).x,foto_hoekpunt3.y)};
+		rectangle_approx.add(rechts);
+		
+		
+		//teken verboden zone
+		for(int test=0;test<4;test++){	
+			for(int j =0;j<4;j++){
+				if(j<3){Imgproc.line(image_orig,rectangle_approx.get(test)[j],rectangle_approx.get(test)[j+1], new Scalar(0,0,255),10);}
+				else{Imgproc.line(image_orig,rectangle_approx.get(test)[j],rectangle_approx.get(test)[0], new Scalar(0,0,255),10);}
+				Imgproc.rectangle(image_orig, rectangle_approx.get(test)[0], rectangle_approx.get(test)[2],new Scalar (0,255,0),-1);
+			}
+		}
+		
+		Point[] corners= new Point[4];
+		int counter = 4;
+		
+		//KALIBREER afmetingen robot
+		
+		RotatedRect robot = new RotatedRect(new Point(RobotLocation[1], RobotLocation[2]),new Size(280,300), RobotLocation[0]);
+		robot.points(corners);
+		//teken robot in blauw
+		for(int j =0;j<4;j++){
+			if(j<3){Imgproc.line(image_orig,corners[j],corners[j+1], new Scalar(255,0,0),10);}
+			else{Imgproc.line(image_orig,corners[j],corners[0], new Scalar(255,0,0),10);}
+		}
+		
+		
+		for (int i=0;i<contours.size();i++){
+			//bepaal benadering vorm van i-de contour
+=======
 		int widthDst = (int) (image.size().height * transformRatio);
 		Mat imgDst = new Mat(widthDst, lengthDst, CvType.CV_64FC1);
 		Imgproc.warpPerspective(image, image, transformation, image.size(), Imgproc.INTER_CUBIC);
@@ -598,10 +912,65 @@ public class ImageProcessor2 {
 
 		for (int i = 0; i < contours.size(); i++) {
 			// bepaal benadering vorm van i-de contour
+>>>>>>> origin/master
 			MatOfPoint2f contouri = new MatOfPoint2f(contours.get(i).toArray());
 			MatOfPoint2f obstaclei_approx = new MatOfPoint2f();
 			MatOfPoint2f curve = new MatOfPoint2f(contours.get(i).toArray());
 			double peri = Imgproc.arcLength(curve, true);
+<<<<<<< HEAD
+			Imgproc.approxPolyDP(contouri, obstaclei_approx, 0.02*peri, true);
+			
+			//bepaal vierhoek rond contour i
+			RotatedRect rect = Imgproc.minAreaRect(obstaclei_approx); //rechthoek over ide contour
+			
+			Point[] corners2= new Point[4];
+			
+			//voeg toe indien niet te groot of te klein object en geen overlap met robot
+			if (rect.size.area()<maxArea && rect.size.area()>minArea &&
+					(Math.hypot(robot.center.x-rect.center.x, robot.center.y-rect.center.y)>robot.size.height)){
+				//bepaal hoekpunten van vierhoek i
+				//teken de hoekpunten van vierhoek counter
+				
+				rect.points(corners2);
+				rectangle_approx.add(corners2);
+				
+				//neem marge rond object: KALIBREER
+				rect = new RotatedRect(rect.center,new Size(rect.size.width*1.2,rect.size.height*1.2),rect.angle);
+				rect.points(corners2);
+				rectangle_approx.set(counter, corners2);
+				
+				
+				counter++;
+			}
+			
+		}
+		
+		//teken rechthoeken in rect_approx: hier zit nog een fout. de rechthoeken in de forlus hierboven worden overschreven met de laatst toegevoegde rechthoek??
+		for(int i =4;i<rectangle_approx.size();i++){	
+			//System.out.println("rechthoek "+i);
+			//System.out.println(rectangle_approx.get(i)[0]);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[0], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[1], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[2], 3, new Scalar(0,255,0),10);
+			Imgproc.circle(image_orig, rectangle_approx.get(i)[3], 3, new Scalar(0,255,0),10);
+			for(int j =0;j<4;j++){
+				if(j<3){
+					Imgproc.line(image_orig,rectangle_approx.get(i)[j],rectangle_approx.get(i)[j+1], new Scalar(0,0,255),2);
+				}
+				else{Imgproc.line(image_orig,rectangle_approx.get(i)[j],rectangle_approx.get(i)[0], new Scalar(0,0,255),2);}
+				
+			}
+		}
+		
+		Imgproc.circle(image_orig, new Point(RobotLocation[1],RobotLocation[2]), 3, new Scalar(0,0,255),10);
+		
+		Imgcodecs.imwrite(path, image_orig);
+		System.out.println("Ended Object Detection");
+		return rectangle_approx;
+		
+	}
+	
+=======
 			Imgproc.approxPolyDP(contouri, obstaclei_approx, 0.02 * peri, true);
 
 			// bepaal vierhoek rond contour i
@@ -663,4 +1032,5 @@ public class ImageProcessor2 {
 
 	}
 
+>>>>>>> origin/master
 }
