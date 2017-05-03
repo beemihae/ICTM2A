@@ -7,7 +7,7 @@ class TCPServer {
 		System.out.println("En de server is gestart eh.");
 		String clientSentence;
 		String capitalizedSentence;
-		ServerSocket welcomeSocket = new ServerSocket(2001);
+		ServerSocket welcomeSocket = new ServerSocket(2005);
 		try {
 			while (true) {
 				Socket connectionSocket = welcomeSocket.accept();
@@ -24,7 +24,8 @@ class TCPServer {
 					System.out.println(capitalizedSentence);
 					System.out.println("En de server is gestart eh.");
 					ImageProcessor2 image = new ImageProcessor2();
-					outToClient.writeBytes(image.lines.toString());
+					System.out.println(image.points);
+					outToClient.writeBytes(image.points);
 				} finally {
 					connectionSocket.close();
 				}

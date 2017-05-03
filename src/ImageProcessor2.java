@@ -37,74 +37,72 @@ public class ImageProcessor2 {
 	private float[] robotLocation; // float[angle, x, y]
 	private ArrayList<Point> source; // nodig voor FourPointTransformation
 	public ArrayList<Line> lines;
-	
+
 	public ArrayList<Integer[][]> contours;
+
+	public String points;
 	private double pixelWidth;
 	private double pixelLength;
+
 	public ImageProcessor2() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		/*BufferedImage image = getPictureIP("http://192.168.43.1:8080/shot.jpg");
-		Mat File = bufferedImageToMat(image);
-		Imgcodecs.imwrite(pathOriginal1, File);
-		originalPicture = File;
-		originalGray = File;
-		*/
+		/*
+		 * BufferedImage image =
+		 * getPictureIP("http://192.168.43.1:8080/shot.jpg"); Mat File =
+		 * bufferedImageToMat(image); Imgcodecs.imwrite(pathOriginal1, File);
+		 * originalPicture = File; originalGray = File;
+		 */
 		originalPicture = Imgcodecs.imread(pathOriginal);
 		originalGray = Imgcodecs.imread(pathOriginal, Imgproc.COLOR_RGB2GRAY);
-		
+
 		applyFilters(width, height);
 
-		//robotLocation = GetRobotLocation();
-		lines = getContours();
+		// robotLocation = GetRobotLocation();
+		points = getContours();
+		System.out.println(points);
 
 	}
 
-	public ArrayList<Line> getContours() {
+	public String getContours() {
 		ArrayList<Integer[][]> res = new ArrayList<Integer[][]>();
 		List<Point[]> rectangle_approx = DetectObjects(pathFilteredGray, robotLocation);
 		System.out.println(rectangle_approx.toString());
 		ArrayList<Line> lines = new ArrayList<Line>();
-		try {
-			Formatter f = new Formatter("/Users/beemihae/Desktop/ICTM/Lines.txt");
-			for (int i = 0; i < rectangle_approx.size(); i++) {
-				Integer[][] contour = new Integer[rectangle_approx.get(i).length][2];
-				for (int j = 0; j < rectangle_approx.get(i).length; j++) {
-					contour[j][0] =  (int)rectangle_approx.get(i)[j].x;
-					contour[j][1] =  (int)rectangle_approx.get(i)[j].y;
-					if(j == rectangle_approx.get(i).length-1){
-					//if (j == 3) {
-						/*f.format("%s %s %s %s", "" + (int) rectangle_approx.get(i)[j].x,
-								"" + (int) rectangle_approx.get(i)[j].y, "" + (int) rectangle_approx.get(i)[0].x,
-								"" + (int) rectangle_approx.get(i)[0].y + "\n");
-						System.out.println(
-								"[" + (int)rectangle_approx.get(i)[j].x + "," + (int)rectangle_approx.get(i)[j].y + "]\t" + "["
-										+ (int)rectangle_approx.get(i)[0].x + "," + (int)rectangle_approx.get(i)[0].y + "]");
-						*/
-						Line temporary = new Line((int)rectangle_approx.get(i)[j].x,(int)rectangle_approx.get(i)[j].y,(int)rectangle_approx.get(i)[0].x,(int)rectangle_approx.get(i)[0].y);
-						lines.add(temporary);
-					} else {
-						/*f.format("%s %s %s %s", "" + (int) rectangle_approx.get(i)[j].x,
-								"" + (int) rectangle_approx.get(i)[j].y, "" + (int) rectangle_approx.get(i)[j + 1].x,
-								"" + (int) rectangle_approx.get(i)[j + 1].y + "\n");
-						System.out.println("[" + (int)rectangle_approx.get(i)[j].x + "," + (int)rectangle_approx.get(i)[j].y
-								+ "]\t" + "[" + (int)rectangle_approx.get(i)[j + 1].x + ","
-								+ (int)rectangle_approx.get(i)[j + 1].y + "]");*/
-						Line temporary = new Line((int)rectangle_approx.get(i)[j].x,(int)rectangle_approx.get(i)[j].y,(int)rectangle_approx.get(i)[j+1].x,(int)rectangle_approx.get(i)[j+1].y);
-						lines.add(temporary);
-					}
+
+		// Formatter f = new
+		// Formatter("/Users/beemihae/Desktop/ICTM/Lines.txt");
+		String f = "";
+		for (int i = 0; i < rectangle_approx.size(); i++) {
+			Integer[][] contour = new Integer[rectangle_approx.get(i).length][2];
+			for (int j = 0; j < rectangle_approx.get(i).length; j++) {
+				contour[j][0] = (int) rectangle_approx.get(i)[j].x;
+				contour[j][1] = (int) rectangle_approx.get(i)[j].y;
+				if (j == rectangle_approx.get(i).length - 1) {
+					f = f+ (int) rectangle_approx.get(i)[j].x + " " + (int) rectangle_approx.get(i)[j].y + " "
+							+ (int) rectangle_approx.get(i)[0].x + " " + (int) rectangle_approx.get(i)[0].y + " ";
+					// if (j == 3) {
+
+					System.out.println("[" + (int) rectangle_approx.get(i)[j].x + ","
+							+ (int) rectangle_approx.get(i)[j].y + "]\t" + "[" + (int) rectangle_approx.get(i)[0].x
+							+ "," + (int) rectangle_approx.get(i)[0].y + "]");
+
+				} else {
+					f = f +(int) rectangle_approx.get(i)[j].x + " " + (int) rectangle_approx.get(i)[j].y + " "
+							+ (int) rectangle_approx.get(i)[j + 1].x + " " + (int) rectangle_approx.get(i)[j + 1].y
+							+ " ";
+
+					System.out.println("[" + (int) rectangle_approx.get(i)[j].x + ","
+							+ (int) rectangle_approx.get(i)[j].y + "]\t" + "[" + (int) rectangle_approx.get(i)[j + 1].x
+							+ "," + (int) rectangle_approx.get(i)[j + 1].y + "]");
 
 				}
-				res.add(contour);
+
 			}
-
-			f.close();
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			res.add(contour);
 		}
 
-		return lines;
+		System.out.println(f);
+		return f;
 	}
 
 	public float getWidth() {
@@ -288,22 +286,22 @@ public class ImageProcessor2 {
 
 		return imgDst;
 	}
-	
+
 	public static Mat bufferedImageToMat(BufferedImage bi) {
 		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
 		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
 		mat.put(0, 0, data);
 		return mat;
 	}
-	
-	public static BufferedImage getPictureIP(String urlPath){
+
+	public static BufferedImage getPictureIP(String urlPath) {
 		Image image = null;
-        try {
-            URL url = new URL(urlPath);
-            image = ImageIO.read(url);
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
+		try {
+			URL url = new URL(urlPath);
+			image = ImageIO.read(url);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return (BufferedImage) image;
 	}
 
@@ -440,80 +438,83 @@ public class ImageProcessor2 {
 		return imgDst;
 	};
 
-public  float [] GetRobotLocation(){
-		
+	public float[] GetRobotLocation() {
+
 		Mat image = filteredColor.clone();
 		Mat imgHSV = filteredColor.clone();
-		
-		//zet om naar HSV
-		Imgproc.cvtColor(image,imgHSV, Imgproc.COLOR_BGR2HSV);
-		
-		//selecteer blauw
+
+		// zet om naar HSV
+		Imgproc.cvtColor(image, imgHSV, Imgproc.COLOR_BGR2HSV);
+
+		// selecteer blauw
 		Mat imgHSV_blue = imgHSV.clone();
 		Core.inRange(imgHSV_blue, new Scalar(110, 50, 50), new Scalar(130, 255, 255), imgHSV_blue);
-		Imgproc.GaussianBlur(imgHSV_blue, imgHSV_blue, new Size(9,9), 2,2);
-		
-		//detecteer blauwe cirkel
+		Imgproc.GaussianBlur(imgHSV_blue, imgHSV_blue, new Size(9, 9), 2, 2);
+
+		// detecteer blauwe cirkel
 		Mat circles1 = new Mat();
-		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		Imgproc.HoughCircles(imgHSV_blue, circles1,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		System.out.println("\nBlauwe cirkel gevonden:  " + (circles1.rows()==1));
+		// Imgproc.HoughCircles(imgHSV_circles,
+		// circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		Imgproc.HoughCircles(imgHSV_blue, circles1, Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		System.out.println("\nBlauwe cirkel gevonden:  " + (circles1.rows() == 1));
 		double bx = circles1.get(0, 0)[0];
 		double by = circles1.get(0, 0)[1];
-		
-				
-		//selecteer groen
+
+		// selecteer groen
 		Mat imgHSV_green = imgHSV.clone();
-		Core.inRange(imgHSV_green, new Scalar(50,100,100), new Scalar(70,255,255), imgHSV_green);
-		Imgproc.GaussianBlur(imgHSV_green, imgHSV_green, new Size(9,9), 2,2);
-		
-		//selecteer groene cirkel
+		Core.inRange(imgHSV_green, new Scalar(50, 100, 100), new Scalar(70, 255, 255), imgHSV_green);
+		Imgproc.GaussianBlur(imgHSV_green, imgHSV_green, new Size(9, 9), 2, 2);
+
+		// selecteer groene cirkel
 		Mat circles2 = new Mat();
-		//Imgproc.HoughCircles(imgHSV_circles, circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		Imgproc.HoughCircles(imgHSV_green, circles2,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
-		System.out.println("Groene cirkel gevonden:  " + (circles2.rows()==1));
+		// Imgproc.HoughCircles(imgHSV_circles,
+		// circles,Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		Imgproc.HoughCircles(imgHSV_green, circles2, Imgproc.CV_HOUGH_GRADIENT, 1, 50, 100, 20, 0, 0);
+		System.out.println("Groene cirkel gevonden:  " + (circles2.rows() == 1));
 		double gx = circles2.get(0, 0)[0];
 		double gy = circles2.get(0, 0)[1];
-		
-		/*//voeg samen
-		Mat imgHSV_circles=imgHSV.clone();
-		Core.addWeighted(imgHSV_green, 1.0, imgHSV_blue, 1.0,0.0,imgHSV_circles);
-		Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/imgHSV_circles.jpg",imgHSV_circles);*/
-		
-		
-		//teken cirkel op origineel
-		Imgproc.circle(image, new Point(bx,by), (int) circles1.get(0, 0)[2], new Scalar(0,0,255),5);
-		Imgproc.circle(image, new Point(gx,gy), (int) circles2.get(0, 0)[2], new Scalar(0,0,255),5);
-		
-		//Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/groundfloor_robot.jpg",image);
-		double hoek = Math.atan((by-gy)/(bx-gx)); //groen aan achterkant, blauw aan voorkant
-		if (bx<gx){ //links
-			if(by<gy){ //omhoog
-				hoek = -(Math.PI-hoek);
+
+		/*
+		 * //voeg samen Mat imgHSV_circles=imgHSV.clone();
+		 * Core.addWeighted(imgHSV_green, 1.0, imgHSV_blue,
+		 * 1.0,0.0,imgHSV_circles); Imgcodecs.imwrite(
+		 * "/Users/elias_debaere/Desktop/ICTM/imgHSV_circles.jpg",imgHSV_circles
+		 * );
+		 */
+
+		// teken cirkel op origineel
+		Imgproc.circle(image, new Point(bx, by), (int) circles1.get(0, 0)[2], new Scalar(0, 0, 255), 5);
+		Imgproc.circle(image, new Point(gx, gy), (int) circles2.get(0, 0)[2], new Scalar(0, 0, 255), 5);
+
+		// Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/groundfloor_robot.jpg",image);
+		double hoek = Math.atan((by - gy) / (bx - gx)); // groen aan achterkant,
+														// blauw aan voorkant
+		if (bx < gx) { // links
+			if (by < gy) { // omhoog
+				hoek = -(Math.PI - hoek);
+			} else {
+				hoek = (Math.PI + hoek);
 			}
-			else{
-				hoek = (Math.PI+hoek);
-			}
-			
+
 		}
-		
-		float angle = (float) (hoek - Math.PI/2);
-		
+
+		float angle = (float) (hoek - Math.PI / 2);
+
 		System.out.println("Coordiniaten Blauwe en Groene cirkel: ");
-		System.out.println("gx: "+gx+"  gy: "+gy);
-		System.out.println("bx: "+bx+"  by: "+by);
+		System.out.println("gx: " + gx + "  gy: " + gy);
+		System.out.println("bx: " + bx + "  by: " + by);
 		System.out.println("\nPositie ROBOT:");
-		System.out.println("hoek: " + hoek/Math.PI*180);
-		
-		float lengte = 187; //afstand tussen blauw en groen = KALIBREREN
-		float x = (float) (gx + Math.cos(hoek)*lengte/2);
-		float y = (float) (gy + Math.sin(hoek)*lengte/2);
-		System.out.println("x: "+x+"  y: "+y);
-		
-		float[] RobotLocation ={angle,x,y}; 
-		
+		System.out.println("hoek: " + hoek / Math.PI * 180);
+
+		float lengte = 187; // afstand tussen blauw en groen = KALIBREREN
+		float x = (float) (gx + Math.cos(hoek) * lengte / 2);
+		float y = (float) (gy + Math.sin(hoek) * lengte / 2);
+		System.out.println("x: " + x + "  y: " + y);
+
+		float[] RobotLocation = { angle, x, y };
+
 		return RobotLocation;
-		
+
 	}
 
 	public static List<Point[]> DetectObjects(String path, float[] RobotLocation) {
@@ -586,17 +587,14 @@ public  float [] GetRobotLocation(){
 		int counter = 4;
 
 		// KALIBREER afmetingen robot
-		/*RotatedRect robot = new RotatedRect(new Point(RobotLocation[1], RobotLocation[2]), new Size(288, 340),
-				RobotLocation[0]);
-		robot.points(corners);
-		// teken robot in blauw
-		for (int j = 0; j < 4; j++) {
-			if (j < 3) {
-				Imgproc.line(image_orig, corners[j], corners[j + 1], new Scalar(255, 0, 0), 10);
-			} else {
-				Imgproc.line(image_orig, corners[j], corners[0], new Scalar(255, 0, 0), 10);
-			}
-		}*/
+		/*
+		 * RotatedRect robot = new RotatedRect(new Point(RobotLocation[1],
+		 * RobotLocation[2]), new Size(288, 340), RobotLocation[0]);
+		 * robot.points(corners); // teken robot in blauw for (int j = 0; j < 4;
+		 * j++) { if (j < 3) { Imgproc.line(image_orig, corners[j], corners[j +
+		 * 1], new Scalar(255, 0, 0), 10); } else { Imgproc.line(image_orig,
+		 * corners[j], corners[0], new Scalar(255, 0, 0), 10); } }
+		 */
 
 		for (int i = 0; i < contours.size(); i++) {
 			// bepaal benadering vorm van i-de contour
@@ -616,11 +614,13 @@ public  float [] GetRobotLocation(){
 
 			// voeg toe indien niet te groot of te klein object en geen overlap
 			// met robot
-			if (rect.size.area() < maxArea && rect.size.area() > minArea){ //&&(Math.hypot(robot.center.x - rect.center.x,
-					//robot.center.y - rect.center.y) > robot.size.height)) {
+			if (rect.size.area() < maxArea && rect.size.area() > minArea) { // &&(Math.hypot(robot.center.x
+																			// -
+																			// rect.center.x,
+				// robot.center.y - rect.center.y) > robot.size.height)) {
 				// bepaal hoekpunten van vierhoek i
 				// teken de hoekpunten van vierhoek counter
-					
+
 				rect.points(corners2);
 				rectangle_approx.add(corners2);
 
