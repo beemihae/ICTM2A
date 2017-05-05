@@ -439,7 +439,17 @@ public class ImageProcessor2 {
 		return imgDst;
 	};
 
-	public float[] GetRobotLocation() {
+	public String GetRobotLocationtoString(){
+		String RobotLocationString;
+		int[] robotrij=this.GetRobotLocation();
+		for(int item:robotrij){
+			RobotLocationString= RobotLocationString+item;
+			RobotLocationString= RobotLocationString+",";
+		}
+		return RobotLocationString;
+	}
+
+	public int[] GetRobotLocation() {
 
 		Mat image = filteredColor.clone();
 		Mat imgHSV = filteredColor.clone();
@@ -499,7 +509,7 @@ public class ImageProcessor2 {
 
 		}
 
-		float angle = (float) (hoek - Math.PI / 2);
+		int angle = (int) (hoek - Math.PI / 2);
 
 		System.out.println("Coordiniaten Blauwe en Groene cirkel: ");
 		System.out.println("gx: " + gx + "  gy: " + gy);
@@ -507,17 +517,16 @@ public class ImageProcessor2 {
 		System.out.println("\nPositie ROBOT:");
 		System.out.println("hoek: " + hoek / Math.PI * 180);
 
-		float lengte = 187; // afstand tussen blauw en groen = KALIBREREN
-		float x = (float) (gx + Math.cos(hoek) * lengte / 2);
-		float y = (float) (gy + Math.sin(hoek) * lengte / 2);
+		int lengte = 187; // afstand tussen blauw en groen = KALIBREREN
+		int x = (int) (gx + Math.cos(hoek) * lengte / 2);
+		int y = (int) (gy + Math.sin(hoek) * lengte / 2);
 		System.out.println("x: " + x + "  y: " + y);
 
-		float[] RobotLocation = { angle, x, y };
+		int[] RobotLocation = {x, y, angle };
 
 		return RobotLocation;
 
 	}
-
 	public static List<Point[]> DetectObjects(String path, float[] RobotLocation) {
 		System.out.println("Start Object Detection");
 
