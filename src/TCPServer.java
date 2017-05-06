@@ -4,9 +4,8 @@ import java.net.*;
 
 class TCPServer {
 	public static void main(String argv[]) throws Exception {
-		System.out.println("En de server is gestart eh.");
+		System.out.println("The server started.");
 		String clientSentence;
-		String capitalizedSentence;
 		ServerSocket welcomeSocket = new ServerSocket(2006);
 		try {
 			while (true) {
@@ -17,21 +16,28 @@ class TCPServer {
 							new InputStreamReader(connectionSocket.getInputStream()));
 					DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 					clientSentence = inFromClient.readLine();
-					System.out.println("En de server is gestart eh.");
 					System.out.println("Received: " + clientSentence);
-					System.out.println("En de server is gestart eh.");
-					
-					System.out.println("En de server is gestart eh.");
 					ImageProcessor2 image = new ImageProcessor2();
-					System.out.println("Image processed");
-					System.out.println(image.points);
-					outToClient.writeBytes(image.points);
+					if(clientSentence.equals("map")){
+						System.out.println("Find map");
+						//System.out.println(image.points);
+						outToClient.writeBytes(image.points);
+						System.out.println("Sent points");
+					} else if (clientSentence.equals("location")){
+						System.out.println("Find location");
+						//System.out.println(image.GetRobotLocationtoString());
+						outToClient.writeBytes(image.GetRobotLocationtoString());
+						System.out.println("Sent Location");
+					}
+					
+					
 				} finally {
 					connectionSocket.close();
 				}
 			}
 		} finally {
 			welcomeSocket.close();
+			System.out.println("closed socket");
 			System.exit(0);
 		}
 	}
