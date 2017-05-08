@@ -23,10 +23,10 @@ import com.sun.javafx.geom.Rectangle;
 import javafx.scene.shape.Line;
 
 public class ImageProcessor2 {
-	public String pathOriginal = "/Users/beemihae/Desktop/ICTM/groundfloor3.jpg";
-	public String pathFilteredGray = "/Users/beemihae/Desktop/ICTM/filtered_gray.jpg";
-	public String pathFilteredColor = "/Users/beemihae/Desktop/ICTM/filtered_color.jpg";
-	public String pathOriginal1 = "/Users/beemihae/Desktop/ICTM/original.jpg";
+	public String pathOriginal = "C:\\Users\\gebruiker\\Documents\\Evert\\workspace\\ICTM2A_server\\src\\Original_met_bollen.jpg";
+	public String pathFilteredGray = "C:\\Users\\gebruiker\\Documents\\Evert\\workspace\\ICTM2A_server\\src\\filtered_gray.jpg";
+	public String pathFilteredColor = "C:\\Users\\gebruiker\\Documents\\Evert\\workspace\\ICTM2A_server\\src\\filtered_color.jpg";
+	public String pathOriginal1 = "C:\\Users\\gebruiker\\Documents\\Evert\\workspace\\ICTM2A_server\\src\\original.jpg";
 	private Mat originalPicture;
 	private Mat originalGray;
 	private Mat filteredGray;
@@ -46,15 +46,15 @@ public class ImageProcessor2 {
 
 	public ImageProcessor2() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
+		/*
 		  BufferedImage image =getPictureIP("http://10.202.223.236:8080/shot.jpg"); 
 		  Mat File =bufferedImageToMat(image); 
 		  Imgcodecs.imwrite(pathOriginal1, File);
 		  originalPicture = File; 
 		  originalGray = File;
-		 /*
+		 */
 		originalPicture = Imgcodecs.imread(pathOriginal);
-		originalGray = Imgcodecs.imread(pathOriginal, Imgproc.COLOR_RGB2GRAY);*/
+		originalGray = Imgcodecs.imread(pathOriginal, Imgproc.COLOR_RGB2GRAY);
 
 		applyFilters(width, height);
 
@@ -440,11 +440,11 @@ public class ImageProcessor2 {
 	};
 
 	public String GetRobotLocationtoString(){
-		String RobotLocationString;
+		String RobotLocationString="";
 		int[] robotrij=this.GetRobotLocation();
 		for(int item:robotrij){
 			RobotLocationString= RobotLocationString+item;
-			RobotLocationString= RobotLocationString+",";
+			RobotLocationString= RobotLocationString+" ";
 		}
 		return RobotLocationString;
 	}
@@ -498,31 +498,31 @@ public class ImageProcessor2 {
 		Imgproc.circle(image, new Point(gx, gy), (int) circles2.get(0, 0)[2], new Scalar(0, 0, 255), 5);
 
 		// Imgcodecs.imwrite("/Users/elias_debaere/Desktop/ICTM/groundfloor_robot.jpg",image);
-		double hoek = Math.atan((by - gy) / (bx - gx)); // groen aan achterkant,
+		double hoekrad = Math.atan((by - gy) / (bx - gx)); // groen aan achterkant,
 														// blauw aan voorkant
 		if (bx < gx) { // links
 			if (by < gy) { // omhoog
-				hoek = -(Math.PI - hoek);
+				hoekrad = -(Math.PI - hoekrad);
 			} else {
-				hoek = (Math.PI + hoek);
+				hoekrad = (Math.PI + hoekrad);
 			}
 
 		}
-
-		int angle = (int) (hoek - Math.PI / 2);
+		
+		int angledeg = (int) (hoekrad*180/Math.PI);
 
 		System.out.println("Coordiniaten Blauwe en Groene cirkel: ");
 		System.out.println("gx: " + gx + "  gy: " + gy);
 		System.out.println("bx: " + bx + "  by: " + by);
 		System.out.println("\nPositie ROBOT:");
-		System.out.println("hoek: " + hoek / Math.PI * 180);
+		System.out.println("hoek: " + hoekrad / Math.PI * 180);
 
 		int lengte = 187; // afstand tussen blauw en groen = KALIBREREN
-		int x = (int) (gx + Math.cos(hoek) * lengte / 2);
-		int y = (int) (gy + Math.sin(hoek) * lengte / 2);
+		int x = (int) (gx + Math.cos(hoekrad) * lengte / 2);
+		int y = (int) (gy + Math.sin(hoekrad) * lengte / 2);
 		System.out.println("x: " + x + "  y: " + y);
 
-		int[] RobotLocation = {x, y, angle };
+		int[] RobotLocation = {x, y, angledeg };
 
 		return RobotLocation;
 
