@@ -38,6 +38,7 @@ public class ImageProcessor {
 	private static double height = 2;
 	public static int[] finishLocation;
 	private static ArrayList<Point> corners_world;
+	static String IPAdress = "http://192.168.43.1:8080//shot.jpg";
 	
 	// NIET STATISCHE VELDEN
 	public int[] robotLocation; // float[angle, x, y]
@@ -51,21 +52,21 @@ public class ImageProcessor {
 
 	public ImageProcessor() {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		/*
-		  BufferedImage image =getPictureIP("http://192.168.0.176:8080//shot.jpg"); 
+		
+		  BufferedImage image =getPictureIP(IPAdress); 
 		  Mat File =bufferedImageToMat(image); 
 		  //Core.flip(File, File, 0);
 		  Imgcodecs.imwrite(pathOriginal1, File);
 		  originalPicture = File; 
 		  originalGray = File;
 		  filteredColor = File;
-		*/
-		 
+		
+		 /*
 		originalPicture = Imgcodecs.imread(pathOriginal);
 		Core.flip(originalPicture, originalPicture, 0);
 		originalGray = Imgcodecs.imread(pathOriginal, Imgproc.COLOR_RGB2GRAY);
 		filteredColor = originalPicture = Imgcodecs.imread(pathOriginal);
-		
+		*/
 		
 		applyFilters(width, height);			// gaussianblur
 		finishLocation = getFinish();
@@ -88,7 +89,7 @@ public class ImageProcessor {
 
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		  BufferedImage image =getPictureIP("http://192.168.0.176:8080//shot.jpg"); 
+		  BufferedImage image =getPictureIP(IPAdress); 
 		  Mat File =bufferedImageToMat(image); 
 		  filteredColor = File;
 		
@@ -309,8 +310,8 @@ public class ImageProcessor {
 	}
 
 	public static Mat adaptiveThreshold(Mat image) {
-		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 123,
-				10);
+		Imgproc.adaptiveThreshold(image, image, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 159,
+				16);
 		return image;
 	}
 

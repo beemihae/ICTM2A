@@ -5,7 +5,7 @@ public class testImageProcessor {
 	public static void main(String[] args) {
 
 		
-		ImageProcessor2 test = new ImageProcessor2();
+		ImageProcessor test = new ImageProcessor();
 			System.out.println(test.points);
 		
 		
